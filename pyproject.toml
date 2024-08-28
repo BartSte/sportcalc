@@ -17,7 +17,6 @@ dependencies = []
 version = "0.0.1"
 
 [project.scripts]
-cc = "cyclingcalculator.__main__:main"
 cycling = "cyclingcalculator.__main__:main"
 
 [tool.setuptools.packages.find]
