@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass
 from datetime import time
 
@@ -52,46 +51,7 @@ class CyclingStats:
     gravity: float = 9.81
     roll_resistance: float = 0.003
 
-    _INPUTS: str = """
---------------------------------------------------------------------------------
-INPUTS
---------------------------------------------------------------------------------
-Time:               {time}
-Weight:             {weight_kg:.2f} kg
-Distance:           {distance_km:.2f} km
-Average speed:      {speed_kmph:.2f} km/h
-"""
-
-    _RESULTS: str = """
---------------------------------------------------------------------------------
-RESULTS
---------------------------------------------------------------------------------
-Energy consumption human:
-    - Drag:                 {energy_drag_kj:>5.0f} kJ
-    - Gravity:              {energy_gravity_kj:>5.0f} kJ
-    - Rolling resistance:   {energy_roll_kj:>5.0f} kJ
-    - Total:                {energy_kj:>5.0f} kJ / {energy_kcal:.0f} kcal
-Average power on the pedals:
-    - Drag:                 {avg_power_drag_w:>5.0f} W
-    - Gravity:              {avg_power_gravity_w:>5.0f} W
-    - Rolling resistance:   {avg_power_roll_w:>5.0f} W
-    - Total:                {avg_power_w:>5.0f} W
-"""
-
-    @property
-    def summary(self) -> str:
-        """
-        Return the inputs and results as a string.
-
-        Returns
-        -------
-            the inputs and results as a string
-
-        """
-        kwargs: dict = self.as_dict()
-        return self._INPUTS.format(**kwargs) + self._RESULTS.format(**kwargs)
-
-    def as_dict(self, exclude: list["str"] | None = None) -> dict:
+    def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
         """
         Return the inputs, results, and constants as a dictionary.
 
@@ -100,30 +60,15 @@ Average power on the pedals:
             the inputs, results, and constants as a dictionary
 
         """
-        exclude = exclude or []
-        exclude = ["summary", "detailed", "json", "as_dict", *exclude]
         kwargs: dict = {
-            k: getattr(self, k)
-            for k in dir(self)
-            if not k.startswith("_") and k not in exclude
+            key: getattr(self, key)
+            for key in dir(self)
+            if key not in exclude
+            and not key.startswith("_")
+            and not callable(getattr(self, key))
         }
+
         return kwargs
-
-    @property
-    def json(self) -> str:
-        """
-        Return the result as a JSON string.
-
-        Returns
-        -------
-            the result as a JSON string
-
-        """
-        non_si_units: tuple[str, ...] = "kj", "kmph", "km"
-        exclude: list[str] = [x for x in dir(self) if x.endswith(non_si_units)]
-        exclude.append("time")
-        result: dict = self.as_dict(exclude)
-        return json.dumps(result, indent=2)
 
     @property
     def time_s(self) -> float:
@@ -150,18 +95,6 @@ Average power on the pedals:
         return self.distance_m / 1000
 
     @property
-    def speed_kmph(self) -> float:
-        """
-        Return the average speed in km/h.
-
-        Returns
-        -------
-            the average speed in km/h
-
-        """
-        return self.distance_km / (self.time_s / 3600)
-
-    @property
     def speed_ms(self) -> float:
         """
         The average speed in m/s.
@@ -172,6 +105,18 @@ Average power on the pedals:
 
         """
         return self.distance_m / self.time_s
+
+    @property
+    def speed_kmph(self) -> float:
+        """
+        Return the average speed in km/h.
+
+        Returns
+        -------
+            the average speed in km/h
+
+        """
+        return self.speed_ms * 3.6
 
     @property
     def work_j(self) -> float:

@@ -30,8 +30,8 @@ def make_parser() -> ArgumentParser:
         "time",
         action="store",
         type=parse_time,
-        help="Time taken to cycle the distance in iso format, e.g. 01:30:00 for"
-        " 1 hour and 30 minutes.",
+        help="The elapsed time as an iso format string (HH:MM:SS) or as a float"
+        " representing the number of hours.",
     )
 
     parser.add_argument(

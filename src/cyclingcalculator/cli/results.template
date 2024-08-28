@@ -1,0 +1,13 @@
+--------------------------------------------------------------------------------
+RESULTS
+--------------------------------------------------------------------------------
+Energy consumption human:
+    - Drag:                 {energy_drag_kj:>5.0f} kJ
+    - Gravity:              {energy_gravity_kj:>5.0f} kJ
+    - Rolling resistance:   {energy_roll_kj:>5.0f} kJ
+    - Total:                {energy_kj:>5.0f} kJ / {energy_kcal:.0f} kcal
+Average power on the pedals:
+    - Drag:                 {avg_power_drag_w:>5.0f} W
+    - Gravity:              {avg_power_gravity_w:>5.0f} W
+    - Rolling resistance:   {avg_power_roll_w:>5.0f} W
+    - Total:                {avg_power_w:>5.0f} W

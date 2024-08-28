@@ -1,6 +1,9 @@
+import json
 from argparse import ArgumentParser, Namespace
+from typing import Any
 
-from cyclingcalculator.cli import make_parser
+from cyclingcalculator.cli.parser import make_parser
+from cyclingcalculator.cli.printer import print_summary
 from cyclingcalculator.stats import CyclingStats
 
 
@@ -23,8 +26,18 @@ def main() -> str:
         ascend_m=args.ascend_m,
         descent_m=args.descent_m,
     )
-    command = "json" if args.json else "summary"
-    return getattr(result, command)
+
+    kwargs: dict[str, Any] = result.as_dict()
+    if args.json:
+        # TODO exclude non-SI from json
+        # non_si_units: tuple[str, ...] = "kj", "kmph", "km"
+        # exclude_non_si = [x for x in dir(self) if x.endswith(non_si_units)]
+        # exclude.extend(exclude_non_si)
+        # TODO make a serializer for time
+        kwargs["time"] = kwargs["time"].strftime("%H:%M:%S")
+        return json.dumps(kwargs, indent=4)
+    else:
+        return print_summary(kwargs)
 
 
 if __name__ == "__main__":
