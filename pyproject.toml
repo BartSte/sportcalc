@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cyclingcalculator"
+authors = [ {name = "BartSte"} ]
+description = "A calculator for cycling statistics."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["cycling", "calculator", "statistics", "energy", "power", "calories", "kilojoules"]
+license = {text = "MIT License"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = []
+version = "0.0.1"
+
+[project.scripts]
+cc = "cyclingcalculator.__main__:main"
+cycling = "cyclingcalculator.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["cyclingcalculator"]
