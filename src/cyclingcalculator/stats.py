@@ -23,6 +23,9 @@ class CyclingStats:
             Distance cycled in meters.
         drag_coefficient_times_area_m2: float
             Drag coefficient times the frontal area in m^2.
+        draft_factor: float
+            The fraction by which the drag is reduced when drafting behind
+            another cyclist.
         drive_train_efficiency: float
             Drive train efficiency.
         gravity: float
@@ -33,6 +36,10 @@ class CyclingStats:
             Coefficient of rolling resistance.
         time: time
             Time taken to cycle the distance in seconds.
+        fraction_spend_drafting: float
+            The fraction of time spent drafting behind another cyclist. Default
+            is 0, meaning no drafting. A value of 1.0 means you spent all your
+            time drafting.
         weight_kg: float
             Weight of the cyclist + bike in kg.
 
@@ -45,11 +52,13 @@ class CyclingStats:
     weight_kg: float
 
     air_density_kgpm3: float = 1.293
+    draft_factor: float = 0.3
     drag_coefficient_times_area_m2: float = 0.39
     efficiency_drive_train: float = 0.98
     efficiency_human: float = 0.25
     gravity: float = 9.81
     roll_resistance: float = 0.003
+    fraction_spend_drafting: float = 0
 
     def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
         """
@@ -198,12 +207,30 @@ class CyclingStats:
             the drag in N
 
         """
-        return (
+        drafting_reduction: float = 1 - self.avg_draft_factor
+        force: float = (
             0.5
             * self.drag_coefficient_times_area_m2
             * self.air_density_kgpm3
             * self.speed_ms**2
         )
+        return force * drafting_reduction
+
+    @property
+    def avg_draft_factor(self) -> float:
+        """
+        Return the average draft factor.
+
+        This factor is determined by the multiplying het `draft_factor` with the
+        `time_fraction_spend_drafting`. As a result, the average draft factor
+        during the ride is calculated.
+
+        Returns
+        -------
+            the average draft factor
+
+        """
+        return self.draft_factor * self.fraction_spend_drafting
 
     @property
     def work_ascend_j(self) -> float:

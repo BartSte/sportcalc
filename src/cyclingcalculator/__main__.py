@@ -19,12 +19,15 @@ def main() -> str:
     parser: ArgumentParser = make_parser()
     args: Namespace = parser.parse_args()
 
+    distance_m: float = args.distance_km * 1000
+    fraction_spend_drafting: float = args.drafting * 0.01
     result: CyclingStats = CyclingStats(
         time=args.time,
-        distance_m=args.distance_km * 1000,
+        distance_m=distance_m,
         weight_kg=args.weight_kg,
         ascend_m=args.ascend_m,
         descent_m=args.descent_m,
+        fraction_spend_drafting=fraction_spend_drafting,
     )
 
     kwargs: dict[str, Any] = result.as_dict()

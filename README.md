@@ -30,8 +30,11 @@ cyclingcalculator --help
 The following assumptions are made:
 
 - Wind speed is 0 m/s
-- No drafting behind other cyclists.
 - A constant speed is maintained throughout the ride.
+- The reduction in drag resistance due to drafting is estimated with a constant
+  (default: 0.3, 30%  reduction in drag resistance). The percentage of time you
+  you were drafting can be set (default: 0% of the time) such that the overall
+  reduction in drag resistance can be calculated.
 
 A rough check to demonstrate the validity is by comparing it to the following
 site:
