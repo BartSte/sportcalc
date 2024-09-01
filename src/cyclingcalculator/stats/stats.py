@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import time
 
+from cyclingcalculator.stats.conversion import j2kcal, j2kj
+
 
 @dataclass
 class CyclingStats:
@@ -482,35 +484,3 @@ class CyclingStats:
 
         """
         return (self.work_roll_j / self.efficiency_drive_train) / self.time_s
-
-
-def j2kj(joules: float) -> float:
-    """
-    Return the energy in Joules as kilojoules.
-
-    Arguments:
-    ---------
-        joules: the energy in Joules
-
-    Returns:
-    -------
-        the energy in kilojoules
-
-    """
-    return joules / 1000
-
-
-def j2kcal(joules: float) -> float:
-    """
-    Return the energy in Joules as kcal.
-
-    Arguments:
-    ---------
-        joules: the energy in Joules
-
-    Returns:
-    -------
-        the energy in kcal
-
-    """
-    return joules / 4184
