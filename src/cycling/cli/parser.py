@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from cyclingcalculator.cli.type_parsers import parse_percentage, parse_time
+from cycling.cli.type_parsers import parse_percentage, parse_time
 
 
 def make_parser() -> ArgumentParser:

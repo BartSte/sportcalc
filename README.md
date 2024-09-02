@@ -1,4 +1,4 @@
-# cyclingcalculator
+# Exercisecalc
 
 Script to estimate the minimal number of calories burned while cycling. The
 assumptions are chosen conservatively, meaning that the actual number of
@@ -18,11 +18,11 @@ No dependencies except the python standard library are required.
 
 ## Usage
 
-The script must be executed from the command line. It is available as: `cc`,
-`cycling`, and `cyclingcalculator`. To get more information, run:
+The script must be executed from the command line. It is available as:
+`cycling`. To get more information, run:
 
 ```
-cyclingcalculator --help
+cycling --help
 ```
 
 ## Validation

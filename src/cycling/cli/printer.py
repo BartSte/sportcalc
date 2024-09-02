@@ -1,6 +1,6 @@
 from typing import Any
 
-from cyclingcalculator.cli.templates import inputs, results
+from cycling.cli.templates import inputs, results
 
 
 def print_summary(data: dict[str, Any]) -> str:

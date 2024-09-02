@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import time
 
-from cyclingcalculator.stats.conversion import j2kcal, j2kj
+from cycling.stats.conversion import j2kcal, j2kj
 
 
 @dataclass

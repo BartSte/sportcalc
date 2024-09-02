@@ -2,9 +2,9 @@ import json
 from argparse import ArgumentParser, Namespace
 from typing import Any
 
-from cyclingcalculator.cli.parser import make_parser
-from cyclingcalculator.cli.printer import print_summary
-from cyclingcalculator.stats import CyclingStats
+from cycling.cli.parser import make_parser
+from cycling.cli.printer import print_summary
+from cycling.stats import CyclingStats
 
 
 def main() -> str:

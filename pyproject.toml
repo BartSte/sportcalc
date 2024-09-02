@@ -3,12 +3,12 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cyclingcalculator"
+name = "exercisecalc"
 authors = [ {name = "BartSte"} ]
-description = "A calculator for cycling statistics."
+description = "A calculator for energy consumption during running and cycling."
 readme = "README.md"
 requires-python = ">=3.10"
-keywords = ["cycling", "calculator", "statistics", "energy", "power", "calories", "kilojoules"]
+keywords = ["cycling", "running", "calculator", "statistics", "energy", "power", "calories", "kilojoules"]
 license = {text = "MIT License"}
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -17,8 +17,8 @@ dependencies = []
 version = "0.0.1"
 
 [project.scripts]
-cycling = "cyclingcalculator.__main__:main"
+cycling = "cycling.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["cyclingcalculator"]
+include = ["cycling", "running"]
