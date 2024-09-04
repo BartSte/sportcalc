@@ -1,7 +1,9 @@
 import json
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import Any
 
+from core.cli.parser import CoreParser
+from core.cli.printer import dump_json
 from cycling.cli.parser import make_parser
 from cycling.cli.printer import print_summary
 from cycling.stats import CyclingStats
@@ -16,7 +18,7 @@ def main() -> str:
         The cycling statistics based on the cli arguments
 
     """
-    parser: ArgumentParser = make_parser()
+    parser: CoreParser = make_parser()
     args: Namespace = parser.parse_args()
 
     distance_m: float = args.distance_km * 1000
@@ -30,17 +32,10 @@ def main() -> str:
         fraction_spend_drafting=fraction_spend_drafting,
     )
 
-    kwargs: dict[str, Any] = result.as_dict()
     if args.json:
-        # TODO exclude non-SI from json
-        # non_si_units: tuple[str, ...] = "kj", "kmph", "km"
-        # exclude_non_si = [x for x in dir(self) if x.endswith(non_si_units)]
-        # exclude.extend(exclude_non_si)
-        # TODO make a serializer for time
-        kwargs["time"] = kwargs["time"].strftime("%H:%M:%S")
-        return json.dumps(kwargs, indent=4)
+        return dump_json(result)
     else:
-        return print_summary(kwargs)
+        return print_summary(result)
 
 
 if __name__ == "__main__":
