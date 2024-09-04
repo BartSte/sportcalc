@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from core.cli.type_parsers import parse_time
 
 
-class CoreParser(ArgumentParser):
+class ExerciseParser(ArgumentParser):
     """Parser for the core module."""
 
     def __init__(self, *args, **kwargs):

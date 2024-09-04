@@ -1,24 +1,19 @@
-from argparse import Namespace
+from core import exec
 
-from core.stats import ExerciseStats
-
-from cycling.cli import CyclingParser
+from cycling.parser import CyclingParser
 from cycling.stats import CyclingStats
 
 
 def main() -> str:
     """
-    Return cycling statistics based on the cli arguments.
+    Entry point for the cycling module.
 
     Returns
     -------
-        The cycling statistics based on the cli arguments
+        the summary of the cycling statistics.
 
     """
-    parser: CyclingParser = CyclingParser()
-    args: Namespace = parser.parse_args()
-    result: ExerciseStats = CyclingStats.from_dict(vars(args))
-    return result.json(indent=4) if args.json else result.summarize()
+    return exec(CyclingParser(), CyclingStats)
 
 
 if __name__ == "__main__":

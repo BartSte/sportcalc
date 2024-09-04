@@ -1,9 +1,9 @@
 from argparse import Namespace
-from core.cli.parser import CoreParser
+from core.cli.parser import ExerciseParser
 from core.cli.type_parsers import parse_percentage
 
 
-class CyclingParser(CoreParser):
+class CyclingParser(ExerciseParser):
     """
     Return the argument parser for the script.
 
