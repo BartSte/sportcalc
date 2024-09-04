@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from os.path import join
 
 from core.conversions import j2kcal, j2kj
 from core.stats import ExerciseStats
+from cycling import paths
 
 
 @dataclass(kw_only=True)
@@ -15,7 +17,7 @@ class CyclingStats(ExerciseStats):
 
     Attributes
     ----------
-        ascend_m: float
+        ascent_m: float
             Total ascent in meters.
         descent_m: float
             Total descent in meters.
@@ -37,7 +39,7 @@ class CyclingStats(ExerciseStats):
 
     """
 
-    ascend_m: float
+    ascent_m: float
     descent_m: float
 
     draft_factor: float = 0.3
@@ -46,6 +48,20 @@ class CyclingStats(ExerciseStats):
     efficiency_human: float = 0.25
     roll_resistance: float = 0.003
     fraction_spend_drafting: float = 0
+
+    def summarize(self) -> str:
+        """
+        Return a string containing a summary of the cycling statistics.
+
+        Returns
+        -------
+            a string containing a summary of the cycling statistics
+
+        """
+        template: str = join(paths.static, "results.template")
+        with open(template) as results_file:
+            txt: str = results_file.read().format(**self.as_dict())
+            return super().summarize() + txt
 
     @property
     def work_j(self) -> float:
@@ -98,7 +114,7 @@ class CyclingStats(ExerciseStats):
             the work done in joules
 
         """
-        work_j = self.work_drag_j + self.work_ascend_j + self.work_roll_j
+        work_j = self.work_drag_j + self.work_ascent_j + self.work_roll_j
         return (work_j / efficiency) + self.work_descend_j
 
     @property
@@ -153,18 +169,18 @@ class CyclingStats(ExerciseStats):
         return self.draft_factor * self.fraction_spend_drafting
 
     @property
-    def work_ascend_j(self) -> float:
+    def work_ascent_j(self) -> float:
         """
-        Return the work done to ascend in joules.
+        Return the work done to ascent in joules.
 
         Note that no efficiency is applied here.
 
         Returns
         -------
-            the work done to ascend in joules
+            the work done to ascent in joules
 
         """
-        return self.ascend_m * self.force_gravity
+        return self.ascent_m * self.force_gravity
 
     @property
     def work_descend_j(self) -> float:
@@ -330,7 +346,7 @@ class CyclingStats(ExerciseStats):
             the energy consumption to overcome the gravity in joules
 
         """
-        return self.work_ascend_j / self.efficiency
+        return self.work_ascent_j / self.efficiency
 
     @property
     def energy_gravity_kj(self) -> float:
@@ -385,7 +401,7 @@ class CyclingStats(ExerciseStats):
 
         """
         work_gravity_j = (
-            self.work_ascend_j / self.efficiency_drive_train
+            self.work_ascent_j / self.efficiency_drive_train
         ) + self.work_descend_j
 
         return work_gravity_j / self.time_s

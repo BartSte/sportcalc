@@ -1,9 +1,6 @@
-import json
 from argparse import ArgumentParser, Namespace
-from typing import Any
 
 from running.cli.parser import make_parser
-from running.cli.printer import print_summary
 from running.stats import RunningStats
 
 
@@ -31,4 +28,3 @@ def main() -> str:
 
 if __name__ == "__main__":
     print(main())
-

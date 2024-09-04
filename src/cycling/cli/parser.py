@@ -16,7 +16,7 @@ def make_parser() -> CoreParser:
     )
 
     parser.add_argument(
-        "ascend_m",
+        "ascent_m",
         action="store",
         type=float,
         default=0,

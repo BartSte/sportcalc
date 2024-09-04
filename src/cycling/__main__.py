@@ -1,11 +1,7 @@
-import json
 from argparse import Namespace
-from typing import Any
 
 from core.cli.parser import CoreParser
-from core.cli.printer import dump_json
 from cycling.cli.parser import make_parser
-from cycling.cli.printer import print_summary
 from cycling.stats import CyclingStats
 
 
@@ -27,15 +23,12 @@ def main() -> str:
         time=args.time,
         distance_m=distance_m,
         weight_kg=args.weight_kg,
-        ascend_m=args.ascend_m,
+        ascent_m=args.ascent_m,
         descent_m=args.descent_m,
         fraction_spend_drafting=fraction_spend_drafting,
     )
 
-    if args.json:
-        return dump_json(result)
-    else:
-        return print_summary(result)
+    return result.json(indent=4) if args.json else result.summarize()
 
 
 if __name__ == "__main__":
