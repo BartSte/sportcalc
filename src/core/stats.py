@@ -70,7 +70,7 @@ class ExerciseStats:
         with open(inputs) as inputs_file:
             return inputs_file.read().format(**self.as_dict())
 
-    def json(self, indent: int=4, **kwargs) -> str:
+    def json(self, indent: int = 4, **kwargs) -> str:
         """
         Return the object as a JSON string.
 
@@ -135,3 +135,24 @@ class ExerciseStats:
 
         """
         return self.speed_ms * 3.6
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "ExerciseStats":
+        """
+        Create a new ExerciseStats from a dictionary.
+
+        This is different from just expanding the dictionary (i.e., `**data`)
+        as this approach allows for the dictionary to have additional keys
+        without throwing an error.
+
+        Returns
+        -------
+            a new ExerciseStats from a dictionary
+
+        """
+        kwargs: dict = {
+            key: data[key]
+            for key in cls.__dataclass_fields__.keys()
+            if key in data
+        }
+        return cls(**kwargs)

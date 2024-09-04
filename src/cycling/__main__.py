@@ -1,7 +1,8 @@
 from argparse import Namespace
 
-from core.cli.parser import CoreParser
-from cycling.cli.parser import make_parser
+from core.stats import ExerciseStats
+
+from cycling.cli import CyclingParser
 from cycling.stats import CyclingStats
 
 
@@ -14,20 +15,9 @@ def main() -> str:
         The cycling statistics based on the cli arguments
 
     """
-    parser: CoreParser = make_parser()
+    parser: CyclingParser = CyclingParser()
     args: Namespace = parser.parse_args()
-
-    distance_m: float = args.distance_km * 1000
-    fraction_spend_drafting: float = args.drafting * 0.01
-    result: CyclingStats = CyclingStats(
-        time=args.time,
-        distance_m=distance_m,
-        weight_kg=args.weight_kg,
-        ascent_m=args.ascent_m,
-        descent_m=args.descent_m,
-        fraction_spend_drafting=fraction_spend_drafting,
-    )
-
+    result: ExerciseStats = CyclingStats.from_dict(vars(args))
     return result.json(indent=4) if args.json else result.summarize()
 
 

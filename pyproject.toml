@@ -18,7 +18,7 @@ version = "0.0.1"
 
 [project.scripts]
 cycling = "cycling.__main__:main"
-running = "running.__main__:main"
+# running = "running.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

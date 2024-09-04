@@ -38,3 +38,9 @@ class CoreParser(ArgumentParser):
             help="Send the output as a JSON string to stdout.",
         )
 
+    def parse_args(self, *args, **kwargs):
+        """Parse the arguments."""
+        args = super().parse_args(*args, **kwargs)
+        args.distance_m = args.distance_km * 1000
+
+        return args
