@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from datetime import time
 
-from cycling.stats.conversion import j2kcal, j2kj
+from core.conversions import j2kcal, j2kj
+from core.stats import ExerciseStats
 
 
-@dataclass
-class CyclingStats:
+@dataclass(kw_only=True)
+class CyclingStats(ExerciseStats):
     """
     Based on the attributes, a set of cycling statistics are calculated and
     presented as properties.
@@ -15,14 +15,10 @@ class CyclingStats:
 
     Attributes
     ----------
-        air_density_kgpm3: float
-            Air density in kg/m^3.
         ascend_m: float
             Total ascent in meters.
         descent_m: float
             Total descent in meters.
-        distance_m: float
-            Distance cycled in meters.
         drag_coefficient_times_area_m2: float
             Drag coefficient times the frontal area in m^2.
         draft_factor: float
@@ -30,104 +26,26 @@ class CyclingStats:
             another cyclist.
         drive_train_efficiency: float
             Drive train efficiency.
-        gravity: float
-            Gravity in m/s^2.
         human_efficiency: float
             Human efficiency.
         roll_resistance: float
             Coefficient of rolling resistance.
-        time: time
-            Time taken to cycle the distance in seconds.
         fraction_spend_drafting: float
             The fraction of time spent drafting behind another cyclist. Default
             is 0, meaning no drafting. A value of 1.0 means you spent all your
             time drafting.
-        weight_kg: float
-            Weight of the cyclist + bike in kg.
 
     """
 
     ascend_m: float
     descent_m: float
-    distance_m: float
-    time: time
-    weight_kg: float
 
-    air_density_kgpm3: float = 1.293
     draft_factor: float = 0.3
     drag_coefficient_times_area_m2: float = 0.39
     efficiency_drive_train: float = 0.98
     efficiency_human: float = 0.25
-    gravity: float = 9.81
     roll_resistance: float = 0.003
     fraction_spend_drafting: float = 0
-
-    def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
-        """
-        Return the inputs, results, and constants as a dictionary.
-
-        Returns
-        -------
-            the inputs, results, and constants as a dictionary
-
-        """
-        kwargs: dict = {
-            key: getattr(self, key)
-            for key in dir(self)
-            if key not in exclude
-            and not key.startswith("_")
-            and not callable(getattr(self, key))
-        }
-
-        return kwargs
-
-    @property
-    def time_s(self) -> float:
-        """
-        Return the time taken to cycle the distance in seconds.
-
-        Returns
-        -------
-            the time taken to cycle the distance in seconds
-
-        """
-        return self.time.hour * 3600 + self.time.minute * 60 + self.time.second
-
-    @property
-    def distance_km(self) -> float:
-        """
-        Return the distance cycled in kilometers.
-
-        Returns
-        -------
-            the distance cycled in kilometers
-
-        """
-        return self.distance_m / 1000
-
-    @property
-    def speed_ms(self) -> float:
-        """
-        The average speed in m/s.
-
-        Returns
-        -------
-            the average speed in m/s
-
-        """
-        return self.distance_m / self.time_s
-
-    @property
-    def speed_kmph(self) -> float:
-        """
-        Return the average speed in km/h.
-
-        Returns
-        -------
-            the average speed in km/h
-
-        """
-        return self.speed_ms * 3.6
 
     @property
     def work_j(self) -> float:

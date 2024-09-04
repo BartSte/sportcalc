@@ -66,8 +66,13 @@ def parse_percentage(percentage: str | int | float) -> float:
         percentage = percentage.replace("%", "")
 
     try:
-        return float(percentage)
+        percentage = float(percentage)
     except ValueError as error:
         raise ValueError(
             "Percentage must be a number. Decimals and a % sign is allowed."
         ) from error
+    else:
+        if not 0 <= percentage <= 100:
+            raise ValueError("Percentage must be between 0 and 100.")
+
+    return percentage
