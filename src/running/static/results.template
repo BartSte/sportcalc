@@ -1,0 +1,7 @@
+--------------------------------------------------------------------------------
+RESULTS
+--------------------------------------------------------------------------------
+METs:              {mets_kcal_kg_h:>5.2f} kcal/kg/h
+Energy:            {energy_kj:>5.0f} kJ / {energy_kcal:.0f} kcal
+
+The energy only includes active calories, no resting calories.

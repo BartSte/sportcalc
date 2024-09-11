@@ -53,6 +53,10 @@ class ExerciseStats:
             if key not in exclude
             and not key.startswith("_")
             and not callable(getattr(self, key))
+            # TODO: using getattr on a property triggers the whole property
+            # calculation. I can also do an isinstance(type(obj), property)
+            # check without triggering the property calculation. However, then
+            # I still need to collect "normal" attributes.
         }
 
         return kwargs
@@ -99,6 +103,18 @@ class ExerciseStats:
 
         """
         return self.time.hour * 3600 + self.time.minute * 60 + self.time.second
+
+    @property
+    def time_h(self) -> float:
+        """
+        Return the time taken to cycle the distance in hours.
+
+        Returns
+        -------
+            the time taken to cycle the distance in hours
+
+        """
+        return self.time_s / 3600
 
     @property
     def distance_km(self) -> float:
