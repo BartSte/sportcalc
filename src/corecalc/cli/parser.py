@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from core.cli.type_parsers import parse_time
+from corecalc.cli.type_parsers import parse_time
 
 
 class ExerciseParser(ArgumentParser):

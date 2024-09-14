@@ -1,4 +1,4 @@
-from core.cli.parser import ExerciseParser
+from corecalc.cli.parser import ExerciseParser
 
 
 class RunningParser(ExerciseParser):

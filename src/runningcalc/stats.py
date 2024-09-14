@@ -3,10 +3,9 @@ from dataclasses import dataclass
 from os.path import join
 
 import numpy as np
-from core.stats import ExerciseStats
-from numpy._core.multiarray import ndarray
+from corecalc.stats import ExerciseStats
 
-from running import paths
+from runningcalc import paths
 
 
 @dataclass
@@ -65,7 +64,7 @@ class RunningStats(ExerciseStats):
 
         """
         mets_active_only: float = self.mets_kcal_kg_h - 1
-        return mets_active_only  * self.weight_kg * self.time_h
+        return mets_active_only * self.weight_kg * self.time_h
 
     @property
     def mets_kcal_kg_h(self) -> float:
@@ -90,7 +89,7 @@ class RunningStats(ExerciseStats):
                 f"{self.METS_KM_H[-1]} km/h may not be accurate."
             )
 
-        mets: ndarray = np.interp(
+        mets: np.ndarray = np.interp(
             self.speed_kmph, self.METS_KM_H, self.METS_KCAL_KG_H
         )
         return float(mets)

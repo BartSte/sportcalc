@@ -1,12 +1,12 @@
-from core import exec
+from corecalc import exec
 
-from cycling.parser import CyclingParser
-from cycling.stats import CyclingStats
+from cyclingcalc.parser import CyclingParser
+from cyclingcalc.stats import CyclingStats
 
 
 def main() -> str:
     """
-    Entry point for the cycling module.
+    Entry point for the cyclingcalc module.
 
     Returns
     -------

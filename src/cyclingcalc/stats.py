@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from os.path import join
 
-from core.conversions import j2kcal, j2kj
-from core.stats import ExerciseStats
-from cycling import paths
+from corecalc.conversions import j2kcal, j2kj
+from corecalc.stats import ExerciseStats
+from cyclingcalc import paths
 
 
 @dataclass(kw_only=True)

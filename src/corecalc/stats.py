@@ -4,7 +4,7 @@ import json
 from os.path import join
 from typing import Any
 
-from core import paths
+from corecalc import paths
 
 
 @dataclass

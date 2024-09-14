@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "exercisecalc"
+name = "sportcalc"
 authors = [ {name = "BartSte"} ]
 description = "A calculator for energy consumption during running and cycling."
 readme = "README.md"
@@ -17,9 +17,9 @@ dependencies = ["numpy"]
 version = "0.0.1"
 
 [project.scripts]
-cycling = "cycling.__main__:main"
-running_ = "running.__main__:main"
+cyclingcalc = "cyclingcalc.__main__:main"
+runningcalc = "runningcalc.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["core", "cycling", "running"]
+include = ["corecalc", "cyclingcalc", "runningcalc"]

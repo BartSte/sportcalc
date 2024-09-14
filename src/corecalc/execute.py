@@ -3,8 +3,8 @@ import sys
 from argparse import Namespace
 from types import TracebackType
 
-from core.cli.parser import ExerciseParser
-from core.stats import ExerciseStats
+from corecalc.cli.parser import ExerciseParser
+from corecalc.stats import ExerciseStats
 
 
 def exec(parser: ExerciseParser, cls: type[ExerciseStats]) -> str:

@@ -1,4 +1,4 @@
-# Exercisecalc
+# Sportcisecalc
 
 Script to estimate the minimal number of calories burned while cycling. The
 assumptions are chosen conservatively, meaning that the actual number of

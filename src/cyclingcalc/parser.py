@@ -1,6 +1,6 @@
 from argparse import Namespace
-from core.cli.parser import ExerciseParser
-from core.cli.type_parsers import parse_percentage
+from corecalc.cli.parser import ExerciseParser
+from corecalc.cli.type_parsers import parse_percentage
 
 
 class CyclingParser(ExerciseParser):
