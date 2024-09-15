@@ -1,14 +1,13 @@
 import logging
-from dataclasses import dataclass
 from os.path import join
 
 import numpy as np
+from corecalc.conversions import kcal2j
 from corecalc.stats import ExerciseStats
 
 from runningcalc import paths
 
 
-@dataclass
 class RunningStats(ExerciseStats):
     """
     The MET values per speed were obtained from the following document:
@@ -17,11 +16,15 @@ class RunningStats(ExerciseStats):
 
     I comapered the results with the following calculator:
 
-        -
+        - TODO
     """
 
     METS_KM_H: tuple[float, ...] = (8.0, 9.6, 10.7, 12.0, 13.8, 16.1)
     METS_KCAL_KG_H: tuple[float, ...] = (8.0, 10.0, 11.0, 12.5, 14.0, 16.0)
+
+    mets_kcal_kg_h: float
+    energy_kcal: float
+    energy_kj: float
 
     def summarize(self) -> str:
         """
@@ -37,20 +40,47 @@ class RunningStats(ExerciseStats):
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt
 
-    @property
-    def energy_kj(self) -> float:
+    def update(self) -> None:
         """
-        Return the work done in kilojoules.
+        Update the statistics that are derived from the constructor arguments.
+        """
+        super().update()
+        self.mets_kcal_kg_h = self._calc_mets_kcal_kg_h(self.speed_kmph)
+        self.energy_kcal = self._calc_energy_kcal(self.mets_kcal_kg_h)
+        self.energy_kj = kcal2j(self.energy_kcal) * 1e-3
 
-        Returns
+    def _calc_mets_kcal_kg_h(self, speed_kmph: float) -> float:
+        """
+        Return the metabolic equivalent of task.
+
+        This is done by converting the MET value to kcal/km/kg.
+
+        Arguments:
+        ---------
+            speed_kmph : float
+                the speed in km/h
+
+        Returns:
         -------
-            the work done in kilojoules
+            the metabolic equivalent of task (kcal/km/kg)
 
         """
-        return self.energy_kcal * 4.184
+        is_out_of_range: bool = (
+            speed_kmph < self.METS_KM_H[0] or speed_kmph > self.METS_KM_H[-1]
+        )
+        if is_out_of_range:
+            logging.warning(
+                f"The speed {speed_kmph} km/h is out of the range data was"
+                f" collected for. Values outside {self.METS_KM_H[0]}-"
+                f"{self.METS_KM_H[-1]} km/h may not be accurate."
+            )
 
-    @property
-    def energy_kcal(self) -> float:
+        mets: np.ndarray = np.interp(
+            speed_kmph, self.METS_KM_H, self.METS_KCAL_KG_H
+        )
+        return float(mets)
+
+    def _calc_energy_kcal(self, mets_kcal_kg_h: float) -> float:
         """
         Return the work done in joules.
 
@@ -58,38 +88,15 @@ class RunningStats(ExerciseStats):
         active energy expenditure only. Otherwise, the resting energy
         expenditure would be included.
 
-        Returns
+        Arguments:
+        ---------
+            mets_kcal_kg_h : float
+                the metabolic equivalent of task (kcal/km/kg
+
+        Returns:
         -------
             the work done in joules
 
         """
-        mets_active_only: float = self.mets_kcal_kg_h - 1
+        mets_active_only: float = mets_kcal_kg_h - 1
         return mets_active_only * self.weight_kg * self.time_h
-
-    @property
-    def mets_kcal_kg_h(self) -> float:
-        """
-        Return the metabolic equivalent of task.
-
-        This is done by converting the MET value to kcal/km/kg.
-
-        Returns
-        -------
-            the metabolic equivalent of task (kcal/km/kg)
-
-        """
-        is_out_of_range: bool = (
-            self.speed_kmph < self.METS_KM_H[0]
-            or self.speed_kmph > self.METS_KM_H[-1]
-        )
-        if is_out_of_range:
-            logging.warning(
-                f"The speed {self.speed_kmph} km/h is out of the range data was"
-                f" collected for. Values outside {self.METS_KM_H[0]}-"
-                f"{self.METS_KM_H[-1]} km/h may not be accurate."
-            )
-
-        mets: np.ndarray = np.interp(
-            self.speed_kmph, self.METS_KM_H, self.METS_KCAL_KG_H
-        )
-        return float(mets)

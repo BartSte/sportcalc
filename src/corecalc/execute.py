@@ -18,7 +18,8 @@ def exec(parser: ExerciseParser, cls: type[ExerciseStats]) -> str:
     """
     sys.excepthook = except_hook
     args: Namespace = parser.parse_args()
-    result: ExerciseStats = cls.from_dict(vars(args))
+    result: ExerciseStats = cls(**vars(args))
+    result.update()
     return result.json(indent=4) if args.json else result.summarize()
 
 

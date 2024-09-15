@@ -1,12 +1,11 @@
-from dataclasses import dataclass
 from os.path import join
 
 from corecalc.conversions import j2kcal, j2kj
 from corecalc.stats import ExerciseStats
+
 from cyclingcalc import paths
 
 
-@dataclass(kw_only=True)
 class CyclingStats(ExerciseStats):
     """
     Based on the attributes, a set of cycling statistics are calculated and
@@ -15,39 +14,200 @@ class CyclingStats(ExerciseStats):
     The "conventional racing bike parameters" of the following study were used:
         - https://www.sheldonbrown.com/rinard/aero/formulas.html
 
-    Attributes
-    ----------
+    Constants
+    ---------
+        DRAG_COEFFICIENT_TIMES_AREA_M2: float
+            Drag coefficient times the frontal area in m^2.
+        DRAFT_FACTOR: float
+            The fraction by which the drag is reduced when drafting behind
+            another cyclist.
+        DRIVE_TRAIN_EFFICIENCY: float
+            Drive train efficiency.
+        HUMAN_EFFICIENCY: float
+            Human efficiency.
+        ROLL_RESISTANCE: float
+            Coefficient of rolling resistance.
+        EFFICIENCY: float
+            The efficiency of the human and drive train combined.
+
+    Attributes constructor
+    ----------------------
         ascent_m: float
             Total ascent in meters.
         descent_m: float
             Total descent in meters.
-        drag_coefficient_times_area_m2: float
-            Drag coefficient times the frontal area in m^2.
-        draft_factor: float
-            The fraction by which the drag is reduced when drafting behind
-            another cyclist.
-        drive_train_efficiency: float
-            Drive train efficiency.
-        human_efficiency: float
-            Human efficiency.
-        roll_resistance: float
-            Coefficient of rolling resistance.
         fraction_spend_drafting: float
             The fraction of time spent drafting behind another cyclist. Default
             is 0, meaning no drafting. A value of 1.0 means you spent all your
             time drafting.
 
+    Attributes draft
+    ----------------
+        avg_draft_factor: float
+            A unitless number that represents the reduction in drag due to
+            drafting behind another cyclist.
+        force_drag: float
+            The force needed to overcome the drag in N.
+        work_drag_j: float
+            The work done to overcome the drag in joules.
+        energy_drag_j: float
+            The energy needed to overcome the drag in joules.
+        energy_drag_kj: float
+            The energy needed to overcome the drag in kilojoules.
+        avg_power_drag_w: float
+            The average power delivered to the pedals by the cyclist to overcome
+            the drag.
+
+    Attributes gravity
+    ------------------
+        force_gravity: float
+            The gravitational force in N.
+        work_ascent_j: float
+            The work done during the ascent in joules.
+        work_descend_j: float
+            The work done during the descent in joules.
+        energy_gravity_j: float
+            The energy needed to overcome the gravity in joules.
+        energy_gravity_kj: float
+            The energy needed to overcome the gravity in kilojoules.
+        avg_power_gravity_w: float
+            The average power delivered to the pedals by the cyclist to overcome
+            the gravity.
+
+    Attributes roll
+    ---------------
+        force_roll: float
+            The force needed to overcome the rolling resistance in N.
+        work_roll_j: float
+            The work done to overcome the rolling resistance in joules.
+        energy_roll_j: float
+            The energy needed to overcome the rolling resistance in joules.
+        energy_roll_kj: float
+            The energy needed to overcome the rolling resistance in kilojoules.
+        avg_power_roll_w: float
+            The average power delivered to the pedals by the cyclist to overcome
+            the rolling resistance.
+
+    Attributes energy consumption
+    -----------------------------
+        work_j: float
+            The work done in joules.
+        energy_j: float
+            The energy consumed by the cyclist in joules.
+        energy_kj: float
+            The energy consumed by the cyclist in kilojoules.
+        energy_kcal: float
+            The energy consumed by the cyclist in kilocalories.
+        avg_power_w: float
+            The average power delivered to the pedals by the cyclist.
+
     """
+
+    DRAFT_FACTOR: float = 0.3
+    DRAG_COEFFICIENT_TIMES_AREA_M2: float = 0.39
+    EFFICIENCY_DRIVE_TRAIN: float = 0.98
+    EFFICIENCY_HUMAN: float = 0.25
+    ROLL_RESISTANCE: float = 0.003
+    EFFICIENCY: float = EFFICIENCY_HUMAN * EFFICIENCY_DRIVE_TRAIN
 
     ascent_m: float
     descent_m: float
-
-    draft_factor: float = 0.3
-    drag_coefficient_times_area_m2: float = 0.39
-    efficiency_drive_train: float = 0.98
-    efficiency_human: float = 0.25
-    roll_resistance: float = 0.003
+    work_j: float
     fraction_spend_drafting: float = 0
+
+    avg_draft_factor: float
+    force_drag: float
+    work_drag_j: float
+    energy_drag_j: float
+    energy_drag_kj: float
+    avg_power_drag_w: float
+
+    force_gravity: float
+    work_ascent_j: float
+    work_descend_j: float
+    energy_gravity_j: float
+    energy_gravity_kj: float
+    avg_power_gravity_w: float
+
+    force_roll: float
+    work_roll_j: float
+    energy_roll_j: float
+    energy_roll_kj: float
+    avg_power_roll_w: float
+
+    energy_j: float
+    energy_kj: float
+    energy_kcal: float
+    avg_power_w: float
+
+    def __init__(
+        self,
+        ascent_m: float,
+        descent_m: float,
+        fraction_spend_drafting: float = 0,
+        **kwargs,
+    ):
+        """
+        Construct.
+
+        Args:
+            ascent_m: the total ascent in meters
+            descent_m: the total descent in meters
+            fraction_spend_drafting: the fraction of time spent drafting behind
+                another cyclist. Default is 0, meaning no drafting. A value of
+                1.0 means you spent all your time drafting.
+            **kwargs: the keyword arguments passed to the parent class
+
+        """
+        super().__init__(**kwargs)
+        self.ascent_m = ascent_m
+        self.descent_m = descent_m
+        self.fraction_spend_drafting = fraction_spend_drafting
+
+    def update(self) -> None:
+        """
+        Update the statistics that are derived from the constructor arguments.
+        """
+        super().update()
+
+        self.avg_draft_factor = self._calc_avg_draft_factor()
+        self.force_drag = self._calc_force_drag(self.avg_draft_factor)
+        self.work_drag_j = self.distance_m * self.force_drag
+        self.energy_drag_j = self.work_drag_j / self.EFFICIENCY
+        self.energy_drag_kj = j2kj(self.energy_drag_j)
+        self.avg_power_drag_w = self._calc_avg_power_drag_w(self.work_drag_j)
+
+        self.force_gravity = self.weight_kg * self.GRAVITY_N
+        self.work_ascent_j = self.ascent_m * self.force_gravity
+        self.work_descend_j = -self.descent_m * self.force_gravity
+        self.energy_gravity_j = self.work_ascent_j / self.EFFICIENCY
+        self.energy_gravity_kj = j2kj(self.energy_gravity_j)
+        self.avg_power_gravity_w = self._calc_avg_power_gravity_w(
+            self.work_ascent_j, self.work_descend_j
+        )
+
+        self.force_roll = self.force_gravity * self.ROLL_RESISTANCE
+        self.work_roll_j = self.distance_m * self.force_roll
+        self.energy_roll_j = self.work_roll_j / self.EFFICIENCY
+        self.energy_roll_kj = j2kj(self.energy_roll_j)
+        self.avg_power_roll_w = self._calc_avg_power_roll_w(self.work_roll_j)
+
+        self.work_j = self._calc_work(
+            self.work_drag_j,
+            self.work_roll_j,
+            self.work_ascent_j,
+            self.work_descend_j,
+        )
+        self.energy_j = self._calc_work(
+            self.work_drag_j,
+            self.work_roll_j,
+            self.work_ascent_j,
+            self.work_descend_j,
+            self.EFFICIENCY,
+        )
+        self.energy_kj = j2kj(self.energy_j)
+        self.energy_kcal = j2kcal(self.energy_j)
+        self.avg_power_w = self._calc_avg_power_w(self.work_j)
 
     def summarize(self) -> str:
         """
@@ -63,19 +223,14 @@ class CyclingStats(ExerciseStats):
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt
 
-    @property
-    def work_j(self) -> float:
-        """
-        Return the work done in joules without any efficiency losses.
-
-        Returns
-        -------
-            the work that is done in joules
-
-        """
-        return self._calc_work()
-
-    def _calc_work(self, efficiency: float = 1.0) -> float:
+    def _calc_work(
+        self,
+        work_drag_j: float,
+        work_roll_j: float,
+        work_ascent_j: float,
+        work_descent_j: float,
+        efficiency: float = 1.0,
+    ) -> float:
         """
         Return the work done in joules using the given `efficiency`.
 
@@ -90,7 +245,7 @@ class CyclingStats(ExerciseStats):
         In reality, the cyclist and the drive train are not 100% efficient.
         Hence, the work done by the human will be greater than the energy that
         is actually supplied to the pedals. This is taken into account by the
-        `efficiency_human` and the `efficiency_drive_train` parameters.
+        `efficiency_human` and the `EFFICIENCY_DRIVE_TRAIN` parameters.
 
         In the case of a cyclist, the efficiency is typically around 0.25. Thus,
         the work supplied by the cyclist must be divided by the efficiency to
@@ -107,6 +262,11 @@ class CyclingStats(ExerciseStats):
 
         Arguments:
         ---------
+            work_drag_j: the work done to overcome the drag in joules
+            work_roll_j: the work done to overcome the rolling resistance in
+            joules
+            work_ascent_j: the work done to overcome the ascent in joules
+            work_descent_j: the work done to overcome the descent in joules
             efficiency: the efficiency of the human and drive train
 
         Returns:
@@ -114,46 +274,32 @@ class CyclingStats(ExerciseStats):
             the work done in joules
 
         """
-        work_j = self.work_drag_j + self.work_ascent_j + self.work_roll_j
-        return (work_j / efficiency) + self.work_descend_j
+        work_j = work_drag_j + work_ascent_j + work_roll_j
+        return (work_j / efficiency) + work_descent_j
 
-    @property
-    def work_drag_j(self) -> float:
+    def _calc_force_drag(self, avg_draft_factor: float) -> float:
         """
-        Return the work done to overcome the drag in joules.
+        Calculate the drag by using the drag coefficient times the frontal area.
 
-        Note that no efficiency is applied here.
+        Arguments:
+        ---------
+            avg_draft_factor: the average draft factor
 
-        Returns
-        -------
-            the work done to overcome the drag in joules
-
-        """
-        return self.distance_m * self.force_drag
-
-    @property
-    def force_drag(self) -> float:
-        """
-        The drag is calculated by using the drag coefficient times the frontal
-        area.
-
-
-        Returns
+        Returns:
         -------
             the drag in N
 
         """
-        drafting_reduction: float = 1 - self.avg_draft_factor
+        drafting_reduction: float = 1 - avg_draft_factor
         force: float = (
             0.5
-            * self.drag_coefficient_times_area_m2
-            * self.air_density_kgpm3
+            * self.DRAG_COEFFICIENT_TIMES_AREA_M2
+            * self.AIR_DENSITY_KGPM3
             * self.speed_ms**2
         )
         return force * drafting_reduction
 
-    @property
-    def avg_draft_factor(self) -> float:
+    def _calc_avg_draft_factor(self) -> float:
         """
         Return the average draft factor.
 
@@ -166,218 +312,20 @@ class CyclingStats(ExerciseStats):
             the average draft factor
 
         """
-        return self.draft_factor * self.fraction_spend_drafting
+        return self.DRAFT_FACTOR * self.fraction_spend_drafting
 
-    @property
-    def work_ascent_j(self) -> float:
-        """
-        Return the work done to ascent in joules.
-
-        Note that no efficiency is applied here.
-
-        Returns
-        -------
-            the work done to ascent in joules
-
-        """
-        return self.ascent_m * self.force_gravity
-
-    @property
-    def work_descend_j(self) -> float:
-        """
-        Return the work done to descend in joules.
-
-        This work is always negative, since the cyclist is descending.
-
-        Returns
-        -------
-            the work done to descend in joules
-
-        """
-        return -self.descent_m * self.force_gravity
-
-    @property
-    def force_gravity(self) -> float:
-        """
-        The work done to overcome the gravity is calculated detemined the
-        potential energy difference between the start and end of the ride.
-
-
-        Returns
-        -------
-            the gravity in N
-
-        """
-        return self.weight_kg * self.gravity
-
-    @property
-    def work_roll_j(self) -> float:
-        """
-        Return the work done to overcome the rolling resistance in joules.
-
-        Note that no efficiency is applied here.
-
-        Returns
-        -------
-            the work done to overcome the rolling resistance in joules
-
-        """
-        return self.distance_m * self.force_roll
-
-    @property
-    def force_roll(self) -> float:
-        """
-        The rolling resistance is calculated by the weight of the cyclist and
-        bike times the coefficient of rolling resistance.
-
-        Returns
-        -------
-            the rolling resistance in N
-
-        """
-        return self.force_gravity * self.roll_resistance
-
-    @property
-    def energy_j(self) -> float:
-        """
-        Return the energy consumption of the cyclist in kilojoules.
-
-        Returns
-        -------
-            the energy consumption of the cyclist in kilojoules
-
-        """
-        return self._calc_work(self.efficiency)
-
-    @property
-    def efficiency(self) -> float:
-        """
-        Return the efficiency of the cyclist and drive train.
-
-        Returns
-        -------
-            the efficiency of the cyclist and drive train
-
-        """
-        return self.efficiency_human * self.efficiency_drive_train
-
-    @property
-    def energy_kj(self) -> float:
-        """
-        Return the energy consumption of the cyclist in kilojoules.
-
-        Returns
-        -------
-            the energy consumption of the cyclist in kilojoules
-
-        """
-        return j2kj(self.energy_j)
-
-    @property
-    def energy_kcal(self) -> float:
-        """
-        Return the energy consumption of the cyclist in kcal.
-
-        Returns
-        -------
-            the energy consumption of the cyclist in kcal
-
-        """
-        return j2kcal(self.energy_j)
-
-    @property
-    def energy_drag_j(self) -> float:
-        """
-        Return the energy consumption to overcome the drag in joules.
-
-        Returns
-        -------
-            the energy consumption to overcome the drag in joules
-
-        """
-        return self.work_drag_j / self.efficiency
-
-    @property
-    def energy_drag_kj(self) -> float:
-        """
-        Return the energy consumption to overcome the drag in kilojoules.
-
-        Returns
-        -------
-            the energy consumption to overcome the drag in kilojoules
-
-        """
-        return j2kj(self.energy_drag_j)
-
-    @property
-    def energy_roll_j(self) -> float:
-        """
-        Return the energy consumption to overcome the rolling resistance in
-        joules.
-
-        Returns
-        -------
-            the energy consumption to overcome the rolling resistance in joules
-
-        """
-        return self.work_roll_j / self.efficiency
-
-    @property
-    def energy_roll_kj(self) -> float:
-        """
-        Return the energy consumption to overcome the rolling resistance in
-        kilojoules.
-
-        Returns
-        -------
-            the energy consumption to overcome the rolling resistance in
-            kilojoules
-
-        """
-        return j2kj(self.energy_roll_j)
-
-    @property
-    def energy_gravity_j(self) -> float:
-        """
-        Return the energy consumption to overcome the gravity in joules.
-
-        Returns
-        -------
-            the energy consumption to overcome the gravity in joules
-
-        """
-        return self.work_ascent_j / self.efficiency
-
-    @property
-    def energy_gravity_kj(self) -> float:
-        """
-        Return the energy consumption to overcome the gravity in kilojoules.
-
-        Returns
-        -------
-            the energy consumption to overcome the gravity in kilojoules
-
-        """
-        return j2kj(self.energy_gravity_j)
-
-    @property
-    def avg_power_w(self) -> float:
+    def _calc_avg_power_w(self, work_j: float) -> float:
         """
         Return the average power that is applied to the pedals in watt.
 
-        Note that we only need to consider the drive train efficiency here,
-        since we are interested in the power that is applied to the pedals, not
-        by the human itself.
-
         Returns
         -------
-            the average power output in watt
+            the average power in watt
 
         """
-        return self._calc_work(self.efficiency_drive_train) / self.time_s
+        return (work_j / self.EFFICIENCY_DRIVE_TRAIN) / self.time_s
 
-    @property
-    def avg_power_drag_w(self) -> float:
+    def _calc_avg_power_drag_w(self, work_drag_j: float) -> float:
         """
         Return the average power that is applied to the pedals to overcome the
         drag in watt.
@@ -387,10 +335,11 @@ class CyclingStats(ExerciseStats):
             the average power to overcome the drag in watt
 
         """
-        return (self.work_drag_j / self.efficiency_drive_train) / self.time_s
+        return (work_drag_j / self.EFFICIENCY_DRIVE_TRAIN) / self.time_s
 
-    @property
-    def avg_power_gravity_w(self) -> float:
+    def _calc_avg_power_gravity_w(
+        self, work_ascent_j: float, work_descend_j: float
+    ) -> float:
         """
         Return the average power that is applied to the pedals to overcome the
         gravity in watt.
@@ -401,13 +350,12 @@ class CyclingStats(ExerciseStats):
 
         """
         work_gravity_j = (
-            self.work_ascent_j / self.efficiency_drive_train
-        ) + self.work_descend_j
+            work_ascent_j / self.EFFICIENCY_DRIVE_TRAIN
+        ) + work_descend_j
 
         return work_gravity_j / self.time_s
 
-    @property
-    def avg_power_roll_w(self) -> float:
+    def _calc_avg_power_roll_w(self, work_roll_j: float) -> float:
         """
         Return the average power that is applied to the pedals to overcome the
         rolling resistance in watt.
@@ -417,4 +365,4 @@ class CyclingStats(ExerciseStats):
             the average power to overcome the rolling resistance in watt
 
         """
-        return (self.work_roll_j / self.efficiency_drive_train) / self.time_s
+        return (work_roll_j / self.EFFICIENCY_DRIVE_TRAIN) / self.time_s

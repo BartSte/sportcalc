@@ -1,13 +1,12 @@
-from dataclasses import dataclass
-from datetime import time
 import json
+from datetime import datetime
 from os.path import join
 from typing import Any
 
 from corecalc import paths
+from corecalc.conversions import datetime2seconds, ms2kmh
 
 
-@dataclass
 class ExerciseStats:
     """
     Based on the attributes, a set of cycling statistics are calculated and
@@ -32,11 +31,44 @@ class ExerciseStats:
     """
 
     distance_m: float
-    time: time
+    time: datetime
     weight_kg: float
+    speed_ms: float
+    speed_kmph: float
 
-    air_density_kgpm3: float = 1.293
-    gravity: float = 9.81
+    AIR_DENSITY_KGPM3: float = 1.293
+    GRAVITY_N: float = 9.81
+
+    def __init__(
+        self, distance_m: float, time: datetime, weight_kg: float, **_
+    ):
+        """
+        Constructor.
+
+        Args:
+            distance_m: the distance traveled in meters
+            time: the time taken to travel the distance
+            weight_kg: the weight of the human + equipment in kg
+
+        """
+        self.distance_m: float = distance_m
+        self.time: datetime = time
+        self.weight_kg: float = weight_kg
+
+    def update(self) -> None:
+        """
+        Set the values of attributes that are not represented by a property.
+
+        For distingushing between the two, the following convention is used:
+            - attributes set by the contructor that are represented by a different
+              unit (m vs km) are repeated by a property.
+            - value that are a result of the constructor arguments are calculated
+              in a function whose output is to an attribute within the `update`
+              method.
+
+        """
+        self.speed_ms = self.distance_m / self.time_s
+        self.speed_kmph = ms2kmh(self.speed_ms)
 
     def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
         """
@@ -53,10 +85,6 @@ class ExerciseStats:
             if key not in exclude
             and not key.startswith("_")
             and not callable(getattr(self, key))
-            # TODO: using getattr on a property triggers the whole property
-            # calculation. I can also do an isinstance(type(obj), property)
-            # check without triggering the property calculation. However, then
-            # I still need to collect "normal" attributes.
         }
 
         return kwargs
@@ -102,7 +130,7 @@ class ExerciseStats:
             the time taken to cycle the distance in seconds
 
         """
-        return self.time.hour * 3600 + self.time.minute * 60 + self.time.second
+        return datetime2seconds(self.time)
 
     @property
     def time_h(self) -> float:
@@ -127,48 +155,3 @@ class ExerciseStats:
 
         """
         return self.distance_m / 1000
-
-    @property
-    def speed_ms(self) -> float:
-        """
-        The average speed in m/s.
-
-        Returns
-        -------
-            the average speed in m/s
-
-        """
-        return self.distance_m / self.time_s
-
-    @property
-    def speed_kmph(self) -> float:
-        """
-        Return the average speed in km/h.
-
-        Returns
-        -------
-            the average speed in km/h
-
-        """
-        return self.speed_ms * 3.6
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "ExerciseStats":
-        """
-        Create a new ExerciseStats from a dictionary.
-
-        This is different from just expanding the dictionary (i.e., `**data`)
-        as this approach allows for the dictionary to have additional keys
-        without throwing an error.
-
-        Returns
-        -------
-            a new ExerciseStats from a dictionary
-
-        """
-        kwargs: dict = {
-            key: data[key]
-            for key in cls.__dataclass_fields__.keys()
-            if key in data
-        }
-        return cls(**kwargs)
