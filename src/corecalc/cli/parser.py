@@ -38,6 +38,15 @@ class ExerciseParser(ArgumentParser):
             help="Send the output as a JSON string to stdout.",
         )
 
+        self.add_argument(
+            "-l",
+            "--loglevel",
+            action="store",
+            default="WARNING",
+            help="Set the log level.",
+            choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        )
+
     def parse_args(self, *args, **kwargs):
         """Parse the arguments."""
         args = super().parse_args(*args, **kwargs)

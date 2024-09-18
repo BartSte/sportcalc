@@ -71,7 +71,7 @@ class RunningStats(ExerciseStats):
         if is_out_of_range:
             logging.warning(
                 f"The speed {speed_kmph} km/h is out of the range data was"
-                f" collected for. Values outside {self.METS_KM_H[0]}-"
+                f" collected for. Values outside {self.METS_KM_H[0]} - "
                 f"{self.METS_KM_H[-1]} km/h may not be accurate."
             )
 

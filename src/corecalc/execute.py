@@ -18,6 +18,12 @@ def exec(parser: ExerciseParser, cls: type[ExerciseStats]) -> str:
     """
     sys.excepthook = except_hook
     args: Namespace = parser.parse_args()
+
+    logging.basicConfig(level=args.loglevel)
+    logging.debug("Log level is set to %s", args.loglevel)
+    logging.debug("Arguments: %s", args)
+    logging.debug("Statistics type: %s", cls.__name__)
+
     result: ExerciseStats = cls(**vars(args))
     result.update()
     return result.json(indent=4) if args.json else result.summarize()

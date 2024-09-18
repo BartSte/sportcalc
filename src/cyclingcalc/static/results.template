@@ -13,3 +13,5 @@ Average power on the pedals:
     - Gravity:              {avg_power_gravity_w:>5.0f} W
     - Rolling resistance:   {avg_power_roll_w:>5.0f} W
     - Total:                {avg_power_w:>5.0f} W
+
+The energy only includes active calories, no resting calories.
