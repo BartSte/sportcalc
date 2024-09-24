@@ -142,6 +142,7 @@ class CyclingStats(ExerciseStats):
 
     def __init__(
         self,
+        *,
         ascent_m: float,
         descent_m: float,
         fraction_spend_drafting: float = 0,
@@ -294,7 +295,7 @@ class CyclingStats(ExerciseStats):
         force: float = (
             0.5
             * self.DRAG_COEFFICIENT_TIMES_AREA_M2
-            * self.AIR_DENSITY_KGPM3
+            * self.air_density_kgpm3
             * self.speed_ms**2
         )
         return force * drafting_reduction

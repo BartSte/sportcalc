@@ -35,25 +35,35 @@ class ExerciseStats:
     weight_kg: float
     speed_ms: float
     speed_kmph: float
+    air_density_kgpm3: float = 1.293
 
-    AIR_DENSITY_KGPM3: float = 1.293
     GRAVITY_N: float = 9.81
 
     def __init__(
-        self, distance_m: float, time: datetime, weight_kg: float, **_
-    ):
+        self,
+        *,
+        distance_m: float,
+        time: datetime,
+        weight_kg: float,
+        air_density_kgpm3: float | None = None,
+        **_,
+    ) -> None:
         """
-        Constructor.
+        Initialize.
 
         Args:
             distance_m: the distance traveled in meters
             time: the time taken to travel the distance
             weight_kg: the weight of the human + equipment in kg
+            air_density_kgpm3: the air density in kg/m^3 (default: 1.293)
 
         """
         self.distance_m: float = distance_m
         self.time: datetime = time
         self.weight_kg: float = weight_kg
+
+        if air_density_kgpm3 is not None and air_density_kgpm3 > 0:
+            self.air_density_kgpm3 = air_density_kgpm3
 
     def update(self) -> None:
         """

@@ -33,6 +33,16 @@ class ExerciseParser(ArgumentParser):
         )
 
         self.add_argument(
+            "-a",
+            "--air-density-kgpm3",
+            action="store",
+            type=float,
+            default=None,
+            help="Air density in kg/m^3.",
+        )
+
+        self.add_argument(
+            "-j",
             "--json",
             action="store_true",
             help="Send the output as a JSON string to stdout.",
