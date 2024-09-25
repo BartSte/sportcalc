@@ -19,6 +19,7 @@ version = "0.0.1"
 [project.scripts]
 cyclingcalc = "cyclingcalc.__main__:main"
 runningcalc = "runningcalc.__main__:main"
+walkingcalc = "walkingcalc.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

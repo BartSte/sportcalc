@@ -1,10 +1,13 @@
 import json
+import logging
 from datetime import datetime
 from os.path import join
 from typing import Any
 
+import numpy as np
+
 from corecalc import paths
-from corecalc.conversions import datetime2seconds, ms2kmh
+from corecalc.conversions import datetime2seconds, kcal2j, ms2kmh
 
 
 class ExerciseStats:
@@ -165,3 +168,119 @@ class ExerciseStats:
 
         """
         return self.distance_m / 1000
+
+
+class MetsStats(ExerciseStats):
+    """
+    Use the METs value for a specific exercise to calculate the energy
+    consumption.
+    """
+
+    mets_kcal_kg_h: float
+    energy_kcal: float
+    energy_kj: float
+
+    def summarize(self) -> str:
+        """
+        Return a string containing a summary of the cycling statistics.
+
+        Returns
+        -------
+            a string containing a summary of the cycling statistics
+
+        """
+        template: str = join(paths.static, "results_mets.template")
+        with open(template) as results_file:
+            txt: str = results_file.read().format(**self.as_dict())
+            return super().summarize() + txt
+
+    def update(self) -> None:
+        """
+        Override the parent method to include the calculation of the energy
+        consumption.
+        """
+        super().update()
+        self.energy_kcal = self.calc_energy_kcal(self.mets_kcal_kg_h)
+        self.energy_kj = kcal2j(self.energy_kcal) * 1e-3
+
+    def calc_energy_kcal(self, mets_kcal_kg_h: float) -> float:
+        """
+        Return the work done in joules.
+
+        1 is subtracted from the MET value to ensure that we calculate the
+        active energy expenditure only. Otherwise, the resting energy
+        expenditure would be included.
+
+        Arguments:
+        ---------
+            mets_kcal_kg_h : float
+                the metabolic equivalent of task (kcal/km/kg
+
+        Returns:
+        -------
+            the work done in joules
+
+        """
+        mets_active_only: float = mets_kcal_kg_h - 1
+        return mets_active_only * self.weight_kg * self.time_h
+
+
+class MetsSpeedStats(MetsStats):
+    """
+    Similar to `MetsBasedStats` but now the METs value is dependent on the
+    speed the exercise is performed at. The values can be provided as two
+    tuples: one for the speed in km/h and the other for the METs value in
+    kcal/km/kg. Missing values are interpolated.
+
+    Attributes
+    ----------
+        METS_KM_H: tuple[float, ...]
+            The speed in km/h at which the METs value was measured.
+        METS_KCAL_KG_H: tuple[float, ...]
+            The METs value in kcal/km/kg at the corresponding speed.
+
+    """
+
+    METS_KM_H: tuple[float, ...]
+    METS_KCAL_KG_H: tuple[float, ...]
+
+    def update(self) -> None:
+        """
+        Override the parent method to include the calculation of the energy
+        consumption using the METs value that is dependent on the speed.
+        """
+        ExerciseStats.update(self)
+        self.mets_kcal_kg_h = self.calc_mets_kcal_kg_h(self.speed_kmph)
+        self.energy_kcal = self.calc_energy_kcal(self.mets_kcal_kg_h)
+        self.energy_kj = kcal2j(self.energy_kcal) * 1e-3
+
+    def calc_mets_kcal_kg_h(self, speed_kmph: float) -> float:
+        """
+        Return the metabolic equivalent of task.
+
+        This is done by converting the MET value to kcal/km/kg.
+
+        Arguments:
+        ---------
+            speed_kmph : float
+                the speed in km/h
+
+        Returns:
+        -------
+            the metabolic equivalent of task (kcal/km/kg)
+
+        """
+        is_out_of_range: bool = (
+            speed_kmph < self.METS_KM_H[0] or speed_kmph > self.METS_KM_H[-1]
+        )
+        if is_out_of_range:
+            logging.warning(
+                f"The speed {speed_kmph} km/h is out of the range data was"
+                f" collected for. Values outside {self.METS_KM_H[0]} - "
+                f"{self.METS_KM_H[-1]} km/h may not be accurate."
+            )
+
+        mets: np.ndarray = np.interp(
+            speed_kmph, self.METS_KM_H, self.METS_KCAL_KG_H
+        )
+        return float(mets)
