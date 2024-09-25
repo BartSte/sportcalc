@@ -40,23 +40,6 @@ class CyclingParser(ExerciseParser):
             prog=prog, usage=usage, description=description, **kwargs
         )
 
-        self.add_argument(
-            "ascent_m",
-            action="store",
-            type=float,
-            default=0,
-            nargs="?",
-            help="Total ascent in meters (default: 0).",
-        )
-
-        self.add_argument(
-            "descent_m",
-            action="store",
-            type=float,
-            default=0,
-            nargs="?",
-            help="Total descent in meters (default: 0).",
-        )
 
         self.add_argument(
             "-d",

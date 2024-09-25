@@ -38,6 +38,8 @@ class ExerciseStats:
     weight_kg: float
     speed_ms: float
     speed_kmph: float
+    ascent_m: float = 0
+    descent_m: float = 0
     air_density_kgpm3: float = 1.293
 
     GRAVITY_N: float = 9.81
@@ -48,7 +50,9 @@ class ExerciseStats:
         distance_m: float,
         time: datetime,
         weight_kg: float,
-        air_density_kgpm3: float | None = None,
+        ascent_m: float,
+        descent_m: float,
+        air_density_kgpm3: float,
         **_,
     ) -> None:
         """
@@ -58,15 +62,17 @@ class ExerciseStats:
             distance_m: the distance traveled in meters
             time: the time taken to travel the distance
             weight_kg: the weight of the human + equipment in kg
+            ascent_m: the total ascent in meters
+            descent_m: the total descent in meters
             air_density_kgpm3: the air density in kg/m^3 (default: 1.293)
 
         """
         self.distance_m: float = distance_m
         self.time: datetime = time
         self.weight_kg: float = weight_kg
-
-        if air_density_kgpm3 is not None and air_density_kgpm3 > 0:
-            self.air_density_kgpm3 = air_density_kgpm3
+        self.ascent_m: float = ascent_m
+        self.descent_m: float = descent_m
+        self.air_density_kgpm3 = air_density_kgpm3
 
     def update(self) -> None:
         """
@@ -82,6 +88,8 @@ class ExerciseStats:
         """
         self.speed_ms = self.distance_m / self.time_s
         self.speed_kmph = ms2kmh(self.speed_ms)
+        self.incline_percent = (self.ascent_m / self.distance_m) * 100
+        self.decline_percent = (self.descent_m / self.distance_m) * 100
 
     def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
         """

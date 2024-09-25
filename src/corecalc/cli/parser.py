@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
 from corecalc.cli.type_parsers import parse_time
+from corecalc.stats import ExerciseStats
 
 
 class ExerciseParser(ArgumentParser):
@@ -33,12 +34,30 @@ class ExerciseParser(ArgumentParser):
         )
 
         self.add_argument(
+            "ascent_m",
+            action="store",
+            type=float,
+            default=ExerciseStats.ascent_m,
+            nargs="?",
+            help="Total ascent in meters (default: 0).",
+        )
+
+        self.add_argument(
+            "descent_m",
+            action="store",
+            type=float,
+            default=ExerciseStats.descent_m,
+            nargs="?",
+            help="Total descent in meters (default: 0).",
+        )
+
+        self.add_argument(
             "-a",
             "--air-density-kgpm3",
             action="store",
+            default=ExerciseStats.air_density_kgpm3,
             type=float,
-            default=None,
-            help="Air density in kg/m^3.",
+            help="Air density in kg/m^3 (default: 1.293 km/m^3).",
         )
 
         self.add_argument(

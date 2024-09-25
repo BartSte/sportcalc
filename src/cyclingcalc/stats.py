@@ -110,8 +110,6 @@ class CyclingStats(ExerciseStats):
     ROLL_RESISTANCE: float = 0.003
     EFFICIENCY: float = EFFICIENCY_HUMAN * EFFICIENCY_DRIVE_TRAIN
 
-    ascent_m: float
-    descent_m: float
     work_j: float
     fraction_spend_drafting: float = 0
 
@@ -143,8 +141,6 @@ class CyclingStats(ExerciseStats):
     def __init__(
         self,
         *,
-        ascent_m: float,
-        descent_m: float,
         fraction_spend_drafting: float = 0,
         **kwargs,
     ):
@@ -152,8 +148,6 @@ class CyclingStats(ExerciseStats):
         Construct.
 
         Args:
-            ascent_m: the total ascent in meters
-            descent_m: the total descent in meters
             fraction_spend_drafting: the fraction of time spent drafting behind
                 another cyclist. Default is 0, meaning no drafting. A value of
                 1.0 means you spent all your time drafting.
@@ -161,8 +155,6 @@ class CyclingStats(ExerciseStats):
 
         """
         super().__init__(**kwargs)
-        self.ascent_m = ascent_m
-        self.descent_m = descent_m
         self.fraction_spend_drafting = fraction_spend_drafting
 
     def update(self) -> None:
