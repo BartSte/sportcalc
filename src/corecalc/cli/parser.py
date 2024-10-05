@@ -4,7 +4,7 @@ from corecalc.cli.type_parsers import parse_time
 from corecalc.stats import ExerciseStats
 
 
-class ExerciseParser(ArgumentParser):
+class CoreParser(ArgumentParser):
     """Parser for the core module."""
 
     def __init__(self, *args, **kwargs):

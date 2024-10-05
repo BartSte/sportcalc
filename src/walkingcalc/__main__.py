@@ -1,5 +1,5 @@
 from corecalc import exec
-from corecalc.cli.parser import ExerciseParser
+from corecalc.cli.parser import CoreParser
 
 from walkingcalc.stats import WalkingStats
 
@@ -13,7 +13,7 @@ def main() -> str:
         the summary of the runningcalc statistics.
 
     """
-    return exec(ExerciseParser(), WalkingStats)
+    return exec(CoreParser(), WalkingStats)
 
 
 if __name__ == "__main__":

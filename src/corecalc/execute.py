@@ -3,11 +3,11 @@ import sys
 from argparse import Namespace
 from types import TracebackType
 
-from corecalc.cli.parser import ExerciseParser
+from corecalc.cli.parser import CoreParser
 from corecalc.stats import ExerciseStats
 
 
-def exec(parser: ExerciseParser, cls: type[ExerciseStats]) -> str:
+def exec(parser: CoreParser, cls: type[ExerciseStats]) -> str:
     """
     Run the statistics of the exercise based on the cli arguments.
 

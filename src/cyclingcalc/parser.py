@@ -1,9 +1,10 @@
 from argparse import Namespace
-from corecalc.cli.parser import ExerciseParser
+
+from corecalc.cli.parser import CoreParser
 from corecalc.cli.type_parsers import parse_percentage
 
 
-class CyclingParser(ExerciseParser):
+class CyclingParser(CoreParser):
     """
     Return the argument parser for the script.
 
@@ -39,7 +40,6 @@ class CyclingParser(ExerciseParser):
         super().__init__(
             prog=prog, usage=usage, description=description, **kwargs
         )
-
 
         self.add_argument(
             "-d",

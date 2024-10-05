@@ -14,5 +14,5 @@ class RunningStats(MetsSpeedStats):
         - TODO
     """
 
-    METS_KM_H: tuple[float, ...] = (8.0, 9.6, 10.7, 12.0, 13.8, 16.1)
+    METS_KM_H: tuple[float, ...] =      (8.0,  9.6, 10.7, 12.0, 13.8, 16.1)
     METS_KCAL_KG_H: tuple[float, ...] = (8.0, 10.0, 11.0, 12.5, 14.0, 16.0)

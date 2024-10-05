@@ -14,12 +14,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = ["numpy"]
-version = "0.0.1"
+version = "0.1.0"
 
 [project.scripts]
 cyclingcalc = "cyclingcalc.__main__:main"
 runningcalc = "runningcalc.__main__:main"
 walkingcalc = "walkingcalc.__main__:main"
+speedskatingcalc = "speedskatingcalc.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
