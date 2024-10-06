@@ -1,4 +1,6 @@
-from argparse import ArgumentParser
+from argparse import Action, ArgumentParser
+from contextlib import suppress
+import logging
 
 from corecalc.cli.type_parsers import parse_time
 from corecalc.stats import ExerciseStats
@@ -75,6 +77,33 @@ class CoreParser(ArgumentParser):
             help="Set the log level.",
             choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         )
+
+    def add_argument(self, *args, **kwargs):
+        """
+        Add an argument to the parser.
+
+        The argument is removed first if it is already present in the parser.
+
+        Args:
+            *args: The positional arguments passed to the ArgumentParser.
+            **kwargs: The keyword arguments passed to the ArgumentParser.
+
+        """
+        self.remove_argument(args[0])
+        super().add_argument(*args, **kwargs)
+
+    def remove_argument(self, name):
+        """
+        Remove an argument from the parser.
+
+        Args:
+            name: The name of the argument to remove.
+
+        """
+        with suppress(StopIteration):
+            duplicate: Action = next(x for x in self._actions if name == x.dest)
+            self._remove_action(duplicate)
+            logging.debug(f"Removed argument: {name}")
 
     def parse_args(self, *args, **kwargs):
         """Parse the arguments."""

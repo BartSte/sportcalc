@@ -1,6 +1,6 @@
 from corecalc import exec
-from corecalc.cli.parser import CoreParser
 
+from speedskatingcalc.parser import SpeedSkatingParser
 from speedskatingcalc.stats import SpeedSkatingStats
 
 
@@ -13,7 +13,7 @@ def main() -> str:
         the summary of the cycling statistics.
 
     """
-    return exec(CoreParser(), SpeedSkatingStats)
+    return exec(SpeedSkatingParser(), SpeedSkatingStats)
 
 
 if __name__ == "__main__":
