@@ -4,6 +4,7 @@ from argparse import Namespace
 from types import TracebackType
 
 from corecalc.cli.parser import CoreParser
+from corecalc.exceptions import CoreException
 from corecalc.stats import ExerciseStats
 
 
@@ -43,9 +44,12 @@ def except_hook(
         traceback: the traceback object.
 
     """
-    known_exceptions: tuple[type[BaseException]] = tuple()
+    known_exceptions: list[type[BaseException]] = [
+        CoreException,
+        KeyboardInterrupt,
+    ]
 
-    if exctype in known_exceptions:
+    if any(isinstance(value, exception) for exception in known_exceptions):
         logging.error(f"{exctype.__name__}: {value}")
     else:
         logging.critical(

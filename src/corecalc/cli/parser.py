@@ -1,6 +1,6 @@
+import logging
 from argparse import Action, ArgumentParser
 from contextlib import suppress
-import logging
 
 from corecalc.cli.type_parsers import parse_time
 from corecalc.stats import ExerciseStats

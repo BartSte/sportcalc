@@ -151,7 +151,7 @@ class ExerciseStats:
             the time taken to cycle the distance in seconds
 
         """
-        return datetime2seconds(self.time)
+        return datetime2seconds(self.time, check=True)
 
     @property
     def time_h(self) -> float:

@@ -16,6 +16,9 @@ classifiers = [
 dependencies = ["numpy"]
 version = "0.1.0"
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
 [project.scripts]
 cyclingcalc = "cyclingcalc.__main__:main"
 runningcalc = "runningcalc.__main__:main"

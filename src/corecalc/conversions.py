@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from corecalc.exceptions import CoreValueError
+
 
 def j2kj(joules: float) -> float:
     """
@@ -32,6 +34,7 @@ def j2kcal(joules: float) -> float:
     """
     return joules / 4184
 
+
 def kcal2j(kcal: float) -> float:
     """
     Return the energy in kcal as Joules.
@@ -46,6 +49,7 @@ def kcal2j(kcal: float) -> float:
 
     """
     return kcal * 4184
+
 
 def ms2kmh(mps: float) -> float:
     """
@@ -62,18 +66,24 @@ def ms2kmh(mps: float) -> float:
     """
     return mps * 3.6
 
-def datetime2seconds(dt: datetime) -> float:
+
+def datetime2seconds(dt: datetime, check: bool = False) -> float:
     """
     Return the datetime as seconds.
 
     Arguments:
     ---------
         dt: the datetime
+        check: whether to check if the datetime is positive and non-zero
+            (default: False)
 
     Returns:
     -------
         the datetime as seconds
 
     """
-    return dt.hour * 3600 + dt.minute * 60 + dt.second
-
+    result = dt.hour * 3600 + dt.minute * 60 + dt.second
+    if check and result <= 0:
+        raise CoreValueError(f"Invalid time: {dt}")
+    else:
+        return result
