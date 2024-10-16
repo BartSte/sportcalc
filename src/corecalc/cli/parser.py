@@ -31,8 +31,12 @@ class CoreParser(ArgumentParser):
             "time",
             action="store",
             type=parse_time,
-            help="The elapsed time as an iso format string (HH:MM:SS) or as a "
-            "float representing the number of hours.",
+            help=(
+                "The elapsed time. It can be provided in iso format (HH:MM:SS)"
+                "or as a float followed by a time unit (s/sec/seconds, "
+                "m/min/minutes, h/hr/hour/hours). A single float is interpreted"
+                "as hours."
+            ),
         )
 
         self.add_argument(

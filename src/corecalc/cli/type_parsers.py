@@ -38,10 +38,16 @@ def parse_time(time_str: str) -> time:
         the time as a time object
 
     """
-    try:
+    with suppress(ValueError):
         return parse_time_with_unit(time_str)
-    except CoreValueError:
+
+    try:
         return parse_iso_time(time_str)
+    except ValueError as error:
+        raise CoreValueError(
+            "Invalid time format. It must be in iso format, a single float, or "
+            "a float with a time unit."
+        ) from error
 
 
 def parse_time_with_unit(time_str: str) -> time:
@@ -57,7 +63,7 @@ def parse_time_with_unit(time_str: str) -> time:
 
     Raises:
     ------
-        CoreValueError: if the time cannot be parsed.
+        ValueError: if the time cannot be parsed.
 
     Returns:
     -------
@@ -71,7 +77,7 @@ def parse_time_with_unit(time_str: str) -> time:
     try:
         unit: str = next(x for x in TIME_UNITS if numbers and x == chars)
     except StopIteration as error:
-        raise CoreValueError(
+        raise ValueError(
             "Time must contain a unit. For example, 1 hour, 30 minutes, or 1 "
             "second."
         ) from error
@@ -102,14 +108,7 @@ def parse_iso_time(time_str: str) -> time:
 
     """
     time_str = float_to_iso(time_str)
-    try:
-        return time.fromisoformat(time_str)
-    except ValueError as error:
-        msg: str = (
-            "Time must be in iso format. For example, 01:30:00 is 1 hour and 30"
-            " minutes."
-        )
-        raise CoreValueError(msg) from error
+    return time.fromisoformat(time_str)
 
 
 def float_to_iso(time_str: str) -> str:
