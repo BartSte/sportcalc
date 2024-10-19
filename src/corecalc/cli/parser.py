@@ -54,7 +54,7 @@ class CoreParser(ArgumentParser):
             type=float,
             default=ExerciseStats.descent_m,
             nargs="?",
-            help="Total descent in meters (default: 0).",
+            help="Total descent in meters (default: ascent value).",
         )
 
         self.add_argument(
