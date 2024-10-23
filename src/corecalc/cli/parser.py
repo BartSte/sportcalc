@@ -17,14 +17,14 @@ class CoreParser(ArgumentParser):
             "weight_kg",
             action="store",
             type=float,
-            help="Weight of the cyclist + bike in kg.",
+            help="Total mass in kg",
         )
 
         self.add_argument(
             "distance_km",
             action="store",
             type=float,
-            help="Distance cycled in km.",
+            help="Distance travelled in km.",
         )
 
         self.add_argument(
@@ -82,7 +82,7 @@ class CoreParser(ArgumentParser):
             choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         )
 
-    def add_argument(self, *args, **kwargs):
+    def add_argument(self, *args, **kwargs) -> Action:
         """
         Add an argument to the parser.
 
@@ -94,7 +94,7 @@ class CoreParser(ArgumentParser):
 
         """
         self.remove_argument(args[0])
-        super().add_argument(*args, **kwargs)
+        return super().add_argument(*args, **kwargs)
 
     def remove_argument(self, name):
         """

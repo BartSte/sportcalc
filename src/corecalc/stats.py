@@ -12,24 +12,22 @@ from corecalc.conversions import datetime2seconds, kcal2j, ms2kmh
 
 class ExerciseStats:
     """
-    Based on the attributes, a set of cycling statistics are calculated and
-    presented as properties.
-
-    The "conventional racing bike parameters" of the following study were used:
-        - https://www.sheldonbrown.com/rinard/aero/formulas.html
+    Based on the attributes, a set of statistics are calculated when the `update`
+    method is called. The results can be summarized as a string or as a JSON
+    string.
 
     Attributes
     ----------
         air_density_kgpm3: float
             Air density in kg/m^3.
         distance_m: float
-            Distance cycled in meters.
+            Distance travelled in meters.
         gravity: float
             Gravity in m/s^2.
         time: time
-            Time taken to cycle the distance in seconds.
+            Elapsed time in seconds.
         weight_kg: float
-            Weight of the cyclist + bike in kg.
+            Weight of the human + equipment in kg.
 
     """
 
@@ -144,11 +142,11 @@ class ExerciseStats:
     @property
     def time_s(self) -> float:
         """
-        Return the time taken to cycle the distance in seconds.
+        Return the time taken to travel the distance in seconds.
 
         Returns
         -------
-            the time taken to cycle the distance in seconds
+            the time taken to travel the distance in seconds
 
         """
         return datetime2seconds(self.time, check=True)
@@ -156,11 +154,11 @@ class ExerciseStats:
     @property
     def time_h(self) -> float:
         """
-        Return the time taken to cycle the distance in hours.
+        Return the time taken to travel the distance in hours.
 
         Returns
         -------
-            the time taken to cycle the distance in hours
+            the time taken to travel the distance in hours
 
         """
         return self.time_s / 3600
@@ -168,11 +166,11 @@ class ExerciseStats:
     @property
     def distance_km(self) -> float:
         """
-        Return the distance cycled in kilometers.
+        Return the distance traveled in kilometers.
 
         Returns
         -------
-            the distance cycled in kilometers
+            the distance traveled in kilometers
 
         """
         return self.distance_m / 1000
@@ -190,11 +188,11 @@ class MetsStats(ExerciseStats):
 
     def summarize(self) -> str:
         """
-        Return a string containing a summary of the cycling statistics.
+        Return a string containing a summary of the statistics.
 
         Returns
         -------
-            a string containing a summary of the cycling statistics
+            a string containing a summary of the statistics
 
         """
         template: str = join(paths.static, "results_mets.template")
