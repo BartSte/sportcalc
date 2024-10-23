@@ -10,9 +10,11 @@ TIME_UNITS: dict[str, int] = {
     "hour": 3600,
     "hours": 3600,
     "m": 60,
+    "min": 60,
     "minute": 60,
     "minutes": 60,
     "s": 1,
+    "sec": 1,
     "second": 1,
     "seconds": 1,
 }

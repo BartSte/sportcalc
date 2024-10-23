@@ -15,18 +15,22 @@ class SpeedSkatingParser(CoreParser):
     lap_distance_km: float
 
     def __init__(self, *args, lap_distance_km: float = 0.4, **kwargs):
+        """
+        Constructor.
+
+        Args:
+            lap_distance_km: the distance of one lap in km.
+            *args: passed to the CoreParser.
+            **kwargs: passed to the CoreParser.
+        """
         super().__init__(*args, **kwargs)
         self.lap_distance_km = lap_distance_km
 
-        self.add_argument(
-            "distance_km",
-            action="store",
-            type=self._parse_distance,
-            help=(
-                "Distance skated in km. When the number is appended by `laps` "
-                "the number is multiplied by `lap_distance_km` km. For example,"
-                " 10 laps equals 4 km for a `lap_distance_km` of 0.4 km."
-            ),
+        self.distance_km.type = self._parse_distance
+        self.distance_km.help = (
+            "Distance skated in km. When the number is appended by `laps` "
+            "the number is multiplied by `lap_distance_km` km. For example,"
+            " 10 laps equals 4 km for a `lap_distance_km` of 0.4 km."
         )
 
     def _parse_distance(self, distance: str) -> float:
@@ -43,6 +47,7 @@ class SpeedSkatingParser(CoreParser):
             the distance in km.
 
         """
-        if distance.endswith("laps"):
-            return float(distance[:-4]) * self.lap_distance_km
+        distance = distance.lower()
+        if distance.endswith(("l", "lap", "laps")):
+            return float(distance.rstrip("laps")) * self.lap_distance_km
         return float(distance)

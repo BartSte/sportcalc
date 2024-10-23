@@ -1,6 +1,4 @@
-import logging
 from argparse import Action, ArgumentParser
-from contextlib import suppress
 
 from corecalc.cli.type_parsers import parse_time
 from corecalc.stats import ExerciseStats
@@ -9,25 +7,27 @@ from corecalc.stats import ExerciseStats
 class CoreParser(ArgumentParser):
     """Parser for the core module."""
 
+    distance_km: Action
+
     def __init__(self, *args, **kwargs):
         """Create a new CoreParser."""
         super().__init__(*args, **kwargs)
 
-        self.add_argument(
+        self.weight_kg = self.add_argument(
             "weight_kg",
             action="store",
             type=float,
             help="Total mass in kg",
         )
 
-        self.add_argument(
+        self.distance_km = self.add_argument(
             "distance_km",
             action="store",
             type=float,
             help="Distance travelled in km.",
         )
 
-        self.add_argument(
+        self.time = self.add_argument(
             "time",
             action="store",
             type=parse_time,
@@ -39,7 +39,7 @@ class CoreParser(ArgumentParser):
             ),
         )
 
-        self.add_argument(
+        self.ascent_m = self.add_argument(
             "ascent_m",
             action="store",
             type=float,
@@ -48,7 +48,7 @@ class CoreParser(ArgumentParser):
             help="Total ascent in meters (default: 0).",
         )
 
-        self.add_argument(
+        self.descent_m = self.add_argument(
             "descent_m",
             action="store",
             type=float,
@@ -81,33 +81,6 @@ class CoreParser(ArgumentParser):
             help="Set the log level.",
             choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         )
-
-    def add_argument(self, *args, **kwargs) -> Action:
-        """
-        Add an argument to the parser.
-
-        The argument is removed first if it is already present in the parser.
-
-        Args:
-            *args: The positional arguments passed to the ArgumentParser.
-            **kwargs: The keyword arguments passed to the ArgumentParser.
-
-        """
-        self.remove_argument(args[0])
-        return super().add_argument(*args, **kwargs)
-
-    def remove_argument(self, name):
-        """
-        Remove an argument from the parser.
-
-        Args:
-            name: The name of the argument to remove.
-
-        """
-        with suppress(StopIteration):
-            duplicate: Action = next(x for x in self._actions if name == x.dest)
-            self._remove_action(duplicate)
-            logging.debug(f"Removed argument: {name}")
 
     def parse_args(self, *args, **kwargs):
         """Parse the arguments."""
