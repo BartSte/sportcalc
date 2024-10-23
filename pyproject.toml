@@ -27,4 +27,4 @@ speedskatingcalc = "speedskatingcalc.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["corecalc", "cyclingcalc", "runningcalc"]
+include = ["corecalc", "cyclingcalc", "runningcalc", "walkingcalc", "speedskatingcalc"]

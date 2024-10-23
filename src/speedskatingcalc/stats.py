@@ -39,7 +39,14 @@ class SpeedSkatingStats(MetsSpeedStats):
         | 24.0         | 12.0 |
         | 26.6         | 13.3 |
 
-    """
-
     METS_KCAL_KG_H = 5.5, 7.8, 10.3, 12.0, 13.3
     METS_KM_H = 14.48, 17.7, 21.0, 24.0, 26.6
+
+    Still not ready comfortable with these numbers. For example, when doing 1
+    lap in 1 minute (24 km/h) the METs value is 12.0. This is similar to
+    running with a speed of 12 km/h and a METs value of 12.0. For me it feels
+    that running is more intense than skating at theses speeds...
+    """
+    METS_KCAL_KG_H = 5.5, 7.8, 10.3, 12.0, 13.3
+    METS_KM_H = 14.48, 17.7, 21.0, 24.0, 26.6
+
