@@ -21,8 +21,7 @@ TIME_UNITS: dict[str, int] = {
 
 
 def parse_time(time_str: str) -> time:
-    """
-    Return the time as a time object.
+    """Return the time as a time object.
 
     First, the time is parsed assuming the user provided the time with a unit.
     If this fails, the time is parsed as an iso format string.
@@ -53,8 +52,7 @@ def parse_time(time_str: str) -> time:
 
 
 def parse_time_with_unit(time_str: str) -> time:
-    """
-    Return the time as a time object.
+    """Return the time as a time object.
 
     The minimal resolution is 1 second.
 
@@ -97,8 +95,7 @@ def _seconds_to_time(total_seconds: int) -> time:
 
 
 def parse_iso_time(time_str: str) -> time:
-    """
-    Return the time as a time object.
+    """Return the time as a time object.
 
     Arguments:
     ---------
@@ -114,8 +111,7 @@ def parse_iso_time(time_str: str) -> time:
 
 
 def float_to_iso(time_str: str) -> str:
-    """
-    If `time_str` can be converted to a float, it is converted to an iso format
+    """If `time_str` can be converted to a float, it is converted to an iso format
     string. Otherwise, the original string is returned.
 
     Arguments:
@@ -137,8 +133,7 @@ def float_to_iso(time_str: str) -> str:
 
 
 def parse_percentage(percentage: str | int | float) -> float:
-    """
-    Return the percentage as a float.
+    """Return the percentage as a float.
 
     Arguments:
     ---------

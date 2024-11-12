@@ -4,8 +4,7 @@ from corecalc.exceptions import CoreValueError
 
 
 def j2kj(joules: float) -> float:
-    """
-    Return the energy in Joules as kilojoules.
+    """Return the energy in Joules as kilojoules.
 
     Arguments:
     ---------
@@ -20,8 +19,7 @@ def j2kj(joules: float) -> float:
 
 
 def j2kcal(joules: float) -> float:
-    """
-    Return the energy in Joules as kcal.
+    """Return the energy in Joules as kcal.
 
     Arguments:
     ---------
@@ -36,8 +34,7 @@ def j2kcal(joules: float) -> float:
 
 
 def kcal2j(kcal: float) -> float:
-    """
-    Return the energy in kcal as Joules.
+    """Return the energy in kcal as Joules.
 
     Arguments:
     ---------
@@ -52,8 +49,7 @@ def kcal2j(kcal: float) -> float:
 
 
 def ms2kmh(mps: float) -> float:
-    """
-    Return the speed in m/s as km/h.
+    """Return the speed in m/s as km/h.
 
     Arguments:
     ---------
@@ -68,8 +64,7 @@ def ms2kmh(mps: float) -> float:
 
 
 def datetime2seconds(dt: datetime, check: bool = False) -> float:
-    """
-    Return the datetime as seconds.
+    """Return the datetime as seconds.
 
     Arguments:
     ---------

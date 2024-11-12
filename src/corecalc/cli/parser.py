@@ -1,4 +1,5 @@
-from argparse import Action, ArgumentParser
+from argparse import Action, ArgumentParser, Namespace
+from typing import Any
 
 from corecalc.cli.type_parsers import parse_time
 from corecalc.stats import ExerciseStats
@@ -9,7 +10,7 @@ class CoreParser(ArgumentParser):
 
     distance_km: Action
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         """Create a new CoreParser."""
         super().__init__(*args, **kwargs)
 
@@ -82,9 +83,9 @@ class CoreParser(ArgumentParser):
             choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         )
 
-    def parse_args(self, *args, **kwargs):
+    def parse_args(self, *args: Any, **kwargs: Any) -> Namespace:
         """Parse the arguments."""
-        args = super().parse_args(*args, **kwargs)
-        args.distance_m = args.distance_km * 1000
+        parsed_args: Namespace = super().parse_args(*args, **kwargs)
+        parsed_args.distance_m = parsed_args.distance_km * 1000
 
-        return args
+        return parsed_args

@@ -7,8 +7,7 @@ from cyclingcalc import paths
 
 
 class CyclingStats(ExerciseStats):
-    """
-    Based on the attributes, a set of cycling statistics are calculated and
+    """Based on the attributes, a set of cycling statistics are calculated and
     presented as properties.
 
     The "conventional racing bike parameters" of the following study were used:
@@ -144,8 +143,7 @@ class CyclingStats(ExerciseStats):
         fraction_spend_drafting: float = 0,
         **kwargs,
     ):
-        """
-        Construct.
+        """Construct.
 
         Args:
             fraction_spend_drafting: the fraction of time spent drafting behind
@@ -158,8 +156,7 @@ class CyclingStats(ExerciseStats):
         self.fraction_spend_drafting = fraction_spend_drafting
 
     def update(self) -> None:
-        """
-        Update the statistics that are derived from the constructor arguments.
+        """Update the statistics that are derived from the constructor arguments.
         """
         super().update()
 
@@ -203,8 +200,7 @@ class CyclingStats(ExerciseStats):
         self.avg_power_w = self._calc_avg_power_w(self.work_j)
 
     def summarize(self) -> str:
-        """
-        Return a string containing a summary of the cycling statistics.
+        """Return a string containing a summary of the cycling statistics.
 
         Returns
         -------
@@ -224,8 +220,7 @@ class CyclingStats(ExerciseStats):
         work_descent_j: float,
         efficiency: float = 1.0,
     ) -> float:
-        """
-        Return the work done in joules using the given `efficiency`.
+        """Return the work done in joules using the given `efficiency`.
 
         3 forces are considered that the cyclist has to overcome:
             - Rolling resistance, created by the tires on the road.
@@ -271,8 +266,7 @@ class CyclingStats(ExerciseStats):
         return (work_j / efficiency) + work_descent_j
 
     def _calc_force_drag(self, avg_draft_factor: float) -> float:
-        """
-        Calculate the drag by using the drag coefficient times the frontal area.
+        """Calculate the drag by using the drag coefficient times the frontal area.
 
         Arguments:
         ---------
@@ -293,8 +287,7 @@ class CyclingStats(ExerciseStats):
         return force * drafting_reduction
 
     def _calc_avg_draft_factor(self) -> float:
-        """
-        Return the average draft factor.
+        """Return the average draft factor.
 
         This factor is determined by the multiplying het `draft_factor` with the
         `time_fraction_spend_drafting`. As a result, the average draft factor
@@ -308,8 +301,7 @@ class CyclingStats(ExerciseStats):
         return self.DRAFT_FACTOR * self.fraction_spend_drafting
 
     def _calc_avg_power_w(self, work_j: float) -> float:
-        """
-        Return the average power that is applied to the pedals in watt.
+        """Return the average power that is applied to the pedals in watt.
 
         Returns
         -------
@@ -319,8 +311,7 @@ class CyclingStats(ExerciseStats):
         return (work_j / self.EFFICIENCY_DRIVE_TRAIN) / self.time_s
 
     def _calc_avg_power_drag_w(self, work_drag_j: float) -> float:
-        """
-        Return the average power that is applied to the pedals to overcome the
+        """Return the average power that is applied to the pedals to overcome the
         drag in watt.
 
         Returns
@@ -333,8 +324,7 @@ class CyclingStats(ExerciseStats):
     def _calc_avg_power_gravity_w(
         self, work_ascent_j: float, work_descend_j: float
     ) -> float:
-        """
-        Return the average power that is applied to the pedals to overcome the
+        """Return the average power that is applied to the pedals to overcome the
         gravity in watt.
 
         Returns
@@ -349,9 +339,8 @@ class CyclingStats(ExerciseStats):
         return work_gravity_j / self.time_s
 
     def _calc_avg_power_roll_w(self, work_roll_j: float) -> float:
-        """
-        Return the average power that is applied to the pedals to overcome the
-        rolling resistance in watt.
+        """Return the average power that is applied to the pedals to overcome
+        the rolling resistance in watt.
 
         Returns
         -------

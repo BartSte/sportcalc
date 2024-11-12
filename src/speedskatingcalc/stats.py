@@ -26,7 +26,7 @@ class SpeedSkatingStats(MetsSpeedStats):
         - Competitive speed skating is has a METs value of 13.3 METs but the
           speed is not specified. In the point above, the METs value per km/h
           is (14.0 - 12.3) / (24.0 - 21.0) = 0.57 METs per km/h. A METs value
-          of 13.3 METs would then correspond to an increase of 
+          of 13.3 METs would then correspond to an increase of
           (13.3 - 12.0) / 0.57 = 2.3 km/h which is 26.3 km/h.
 
         Roller blading (from the source above)
@@ -64,4 +64,3 @@ class SpeedSkatingStats(MetsSpeedStats):
 
     METS_KCAL_KG_H = 5.5, 7.8, 10.3, 12.0, 13.3
     METS_KM_H = 14.48, 17.7, 21.0, 24.0, 26.3
-

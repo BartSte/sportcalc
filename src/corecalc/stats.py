@@ -121,7 +121,7 @@ class ExerciseStats:
         with open(inputs) as inputs_file:
             return inputs_file.read().format(**self.as_dict())
 
-    def json(self, indent: int = 4, **kwargs) -> str:
+    def json(self, indent: int = 4, **kwargs: Any) -> str:
         """
         Return the object as a JSON string.
 

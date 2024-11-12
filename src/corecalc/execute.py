@@ -9,8 +9,7 @@ from corecalc.stats import ExerciseStats
 
 
 def exec(parser: CoreParser, cls: type[ExerciseStats]) -> str:
-    """
-    Run the statistics of the exercise based on the cli arguments.
+    """Run the statistics of the exercise based on the cli arguments.
 
     Returns
     -------
@@ -35,8 +34,7 @@ def except_hook(
     value: BaseException,
     traceback: TracebackType | None,
 ) -> None:
-    """
-    Handle exceptions and log them.
+    """Handle exceptions and log them.
 
     Args:
         exctype: the type of the exception.
