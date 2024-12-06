@@ -6,8 +6,8 @@ from typing import Any
 
 import numpy as np
 
-from corecalc import paths
-from corecalc.conversions import datetime2seconds, kcal2j, ms2kmh
+from sportcalc.core import static
+from sportcalc.core.conversions import datetime2seconds, kcal2j, ms2kmh
 
 
 class ExerciseStats:
@@ -117,7 +117,7 @@ class ExerciseStats:
             the string representation of the object
 
         """
-        inputs: str = join(paths.static, "inputs.template")
+        inputs: str = join(static, "inputs.template")
         with open(inputs) as inputs_file:
             return inputs_file.read().format(**self.as_dict())
 
@@ -195,7 +195,7 @@ class MetsStats(ExerciseStats):
             a string containing a summary of the statistics
 
         """
-        template: str = join(paths.static, "results_mets.template")
+        template: str = join(static, "results_mets.template")
         with open(template) as results_file:
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt
@@ -213,7 +213,7 @@ class MetsStats(ExerciseStats):
         """
         Return the work done in joules.
 
-        1 is subtracted from the MET value to ensure that we calculate the
+        1 is subtracted from the MET value to ensure that we ulate the
         active energy expenditure only. Otherwise, the resting energy
         expenditure would be included.
 

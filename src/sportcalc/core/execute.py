@@ -3,9 +3,9 @@ import sys
 from argparse import Namespace
 from types import TracebackType
 
-from corecalc.cli.parser import CoreParser
-from corecalc.exceptions import CoreException
-from corecalc.stats import ExerciseStats
+from sportcalc.core.cli.parser import CoreParser
+from sportcalc.core.exceptions import CoreException
+from sportcalc.core.stats import ExerciseStats
 
 
 def exec(parser: CoreParser, cls: type[ExerciseStats]) -> str:

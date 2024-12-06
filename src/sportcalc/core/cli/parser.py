@@ -1,8 +1,8 @@
 from argparse import Action, ArgumentParser, Namespace
 from typing import Any
 
-from corecalc.cli.type_parsers import parse_time
-from corecalc.stats import ExerciseStats
+from sportcalc.core.cli.type_parsers import parse_time
+from sportcalc.core.stats import ExerciseStats
 
 
 class CoreParser(ArgumentParser):
@@ -89,3 +89,15 @@ class CoreParser(ArgumentParser):
         parsed_args.distance_m = parsed_args.distance_km * 1000
 
         return parsed_args
+
+
+def make_top_level_parser() -> ArgumentParser:
+    """Create the top level parser."""
+    parser = ArgumentParser(
+        prog="sportcalc",
+        description="Calculate statistics for various sports.",
+    )
+
+    # TODO: redirect the user to 1 of the sports
+
+    return parser

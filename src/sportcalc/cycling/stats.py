@@ -1,14 +1,13 @@
 from os.path import join
+from typing import override
 
-from corecalc.conversions import j2kcal, j2kj
-from corecalc.stats import ExerciseStats
-
-from cyclingcalc import paths
+from sportcalc.core.conversions import j2kcal, j2kj
+from sportcalc.core.stats import ExerciseStats
+from sportcalc.cycling import static
 
 
 class CyclingStats(ExerciseStats):
-    """Based on the attributes, a set of cycling statistics are calculated and
-    presented as properties.
+    """A set of cycling statistics are calculated and presented as properties.
 
     The "conventional racing bike parameters" of the following study were used:
         - https://www.sheldonbrown.com/rinard/aero/formulas.html
@@ -156,8 +155,7 @@ class CyclingStats(ExerciseStats):
         self.fraction_spend_drafting = fraction_spend_drafting
 
     def update(self) -> None:
-        """Update the statistics that are derived from the constructor arguments.
-        """
+        """Update the statistics that are derived from the constructor arguments."""
         super().update()
 
         self.avg_draft_factor = self._calc_avg_draft_factor()
@@ -199,6 +197,7 @@ class CyclingStats(ExerciseStats):
         self.energy_kcal = j2kcal(self.energy_j)
         self.avg_power_w = self._calc_avg_power_w(self.work_j)
 
+    @override
     def summarize(self) -> str:
         """Return a string containing a summary of the cycling statistics.
 
@@ -207,7 +206,7 @@ class CyclingStats(ExerciseStats):
             a string containing a summary of the cycling statistics
 
         """
-        template: str = join(paths.static, "results.template")
+        template: str = join(static, "results.template")
         with open(template) as results_file:
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt
@@ -311,8 +310,8 @@ class CyclingStats(ExerciseStats):
         return (work_j / self.EFFICIENCY_DRIVE_TRAIN) / self.time_s
 
     def _calc_avg_power_drag_w(self, work_drag_j: float) -> float:
-        """Return the average power that is applied to the pedals to overcome the
-        drag in watt.
+        """Return the average power that is applied to the pedals to overcome
+        the drag in watt.
 
         Returns
         -------

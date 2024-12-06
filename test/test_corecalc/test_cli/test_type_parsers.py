@@ -1,7 +1,7 @@
 from datetime import time
 
 import pytest
-from corecalc.cli.type_parsers import parse_time_with_unit
+from sportcalc.core.cli.type_parsers import parse_time_with_unit
 
 
 def test_parse_with_unit():

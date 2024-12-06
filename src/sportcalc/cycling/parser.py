@@ -1,7 +1,7 @@
 from argparse import Namespace
 
-from corecalc.cli.parser import CoreParser
-from corecalc.cli.type_parsers import parse_percentage
+from sportcalc.core.cli.parser import CoreParser
+from sportcalc.core.cli.type_parsers import parse_percentage
 
 
 class CyclingParser(CoreParser):
