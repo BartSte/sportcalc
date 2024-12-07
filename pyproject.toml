@@ -20,11 +20,11 @@ version = "0.1.0"
 dev = ["pytest"]
 
 [project.scripts]
-cycling = "sportcalc.cycling:main"
-running = "sportcalc.running:main"
-walking = "sportcalc.walking:main"
-speedskating = "sportcalc.speedskating:main"
+cycling = "sportcalc.implementations.cycling:main"
+running = "sportcalc.implementations.running:main"
+walking = "sportcalc.implementations.walking:main"
+speedskating = "sportcalc.implementations.speedskating:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["corecalc", "cyclingcalc", "runningcalc", "walkingcalc", "speedskatingcalc"]
+include = ["sportcalc", "sportcalc.*"]

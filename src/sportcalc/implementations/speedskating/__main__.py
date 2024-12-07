@@ -1,7 +1,6 @@
 from sportcalc.core import exec
-
-from sportcalc.speedskating.parser import SpeedSkatingParser
-from sportcalc.speedskating.stats import SpeedSkatingStats
+from sportcalc.implementations.speedskating.parser import SpeedSkatingParser
+from sportcalc.implementations.speedskating.stats import SpeedSkatingStats
 
 
 def main() -> str:

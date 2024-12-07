@@ -3,7 +3,7 @@ from typing import override
 
 from sportcalc.core.conversions import j2kcal, j2kj
 from sportcalc.core.stats import ExerciseStats
-from sportcalc.cycling import static
+from sportcalc.implementations.cycling import static
 
 
 class CyclingStats(ExerciseStats):
