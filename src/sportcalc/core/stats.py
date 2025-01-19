@@ -11,8 +11,7 @@ from sportcalc.core.conversions import datetime2seconds, kcal2j, ms2kmh
 
 
 class ExerciseStats:
-    """
-    Based on the attributes, a set of statistics are calculated when the `update`
+    """Based on the attributes, a set of statistics are calculated when the `update`
     method is called. The results can be summarized as a string or as a JSON
     string.
 
@@ -53,8 +52,7 @@ class ExerciseStats:
         air_density_kgpm3: float,
         **_,
     ) -> None:
-        """
-        Initialize.
+        """Initialize.
 
         Args:
             distance_m: the distance traveled in meters
@@ -65,16 +63,15 @@ class ExerciseStats:
             air_density_kgpm3: the air density in kg/m^3 (default: 1.293)
 
         """
-        self.distance_m: float = distance_m
-        self.time: datetime = time
-        self.weight_kg: float = weight_kg
-        self.ascent_m: float = ascent_m
-        self.descent_m: float = descent_m
+        self.distance_m = distance_m
+        self.time = time
+        self.weight_kg = weight_kg
+        self.ascent_m = ascent_m
+        self.descent_m = descent_m
         self.air_density_kgpm3 = air_density_kgpm3
 
     def update(self) -> None:
-        """
-        Set the values of attributes that are not represented by a property.
+        """Set the values of attributes that are not represented by a property.
 
         For distingushing between the two, the following convention is used:
             - attributes set by the contructor that are represented by a different
@@ -86,12 +83,9 @@ class ExerciseStats:
         """
         self.speed_ms = self.distance_m / self.time_s
         self.speed_kmph = ms2kmh(self.speed_ms)
-        self.incline_percent = (self.ascent_m / self.distance_m) * 100
-        self.decline_percent = (self.descent_m / self.distance_m) * 100
 
-    def as_dict(self, exclude: tuple[str, ...] = tuple()) -> dict:
-        """
-        Return the inputs, results, and constants as a dictionary.
+    def as_dict(self, exclude: tuple[str, ...] = ()) -> dict:
+        """Return the inputs, results, and constants as a dictionary.
 
         Returns
         -------
@@ -109,8 +103,7 @@ class ExerciseStats:
         return kwargs
 
     def summarize(self) -> str:
-        """
-        Return the string representation of the object.
+        """Return the string representation of the object.
 
         Returns
         -------
@@ -122,8 +115,7 @@ class ExerciseStats:
             return inputs_file.read().format(**self.as_dict())
 
     def json(self, indent: int = 4, **kwargs: Any) -> str:
-        """
-        Return the object as a JSON string.
+        """Return the object as a JSON string.
 
         Returns
         -------
@@ -141,8 +133,7 @@ class ExerciseStats:
 
     @property
     def time_s(self) -> float:
-        """
-        Return the time taken to travel the distance in seconds.
+        """Return the time taken to travel the distance in seconds.
 
         Returns
         -------
@@ -153,8 +144,7 @@ class ExerciseStats:
 
     @property
     def time_h(self) -> float:
-        """
-        Return the time taken to travel the distance in hours.
+        """Return the time taken to travel the distance in hours.
 
         Returns
         -------
@@ -165,8 +155,7 @@ class ExerciseStats:
 
     @property
     def distance_km(self) -> float:
-        """
-        Return the distance traveled in kilometers.
+        """Return the distance traveled in kilometers.
 
         Returns
         -------
@@ -177,8 +166,7 @@ class ExerciseStats:
 
 
 class MetsStats(ExerciseStats):
-    """
-    Use the METs value for a specific exercise to calculate the energy
+    """Use the METs value for a specific exercise to calculate the energy
     consumption.
     """
 
@@ -187,8 +175,7 @@ class MetsStats(ExerciseStats):
     energy_kj: float
 
     def summarize(self) -> str:
-        """
-        Return a string containing a summary of the statistics.
+        """Return a string containing a summary of the statistics.
 
         Returns
         -------
@@ -201,8 +188,7 @@ class MetsStats(ExerciseStats):
             return super().summarize() + txt
 
     def update(self) -> None:
-        """
-        Override the parent method to include the calculation of the energy
+        """Override the parent method to include the calculation of the energy
         consumption.
         """
         super().update()
@@ -210,8 +196,7 @@ class MetsStats(ExerciseStats):
         self.energy_kj = kcal2j(self.energy_kcal) * 1e-3
 
     def calc_energy_kcal(self, mets_kcal_kg_h: float) -> float:
-        """
-        Return the work done in joules.
+        """Return the work done in joules.
 
         1 is subtracted from the MET value to ensure that we ulate the
         active energy expenditure only. Otherwise, the resting energy
@@ -232,11 +217,10 @@ class MetsStats(ExerciseStats):
 
 
 class MetsSpeedStats(MetsStats):
-    """
-    Similar to `MetsBasedStats` but now the METs value is dependent on the
-    speed the exercise is performed at. The values can be provided as two
-    tuples: one for the speed in km/h and the other for the METs value in
-    kcal/km/kg. Missing values are interpolated.
+    """Similar to `MetsBasedStats` but now the METs value depends on the speed.
+
+    The values can be provided as two tuples: one for the speed in km/h and the
+    other for the METs value in kcal/km/kg. Missing values are interpolated.
 
     Attributes
     ----------
@@ -251,9 +235,10 @@ class MetsSpeedStats(MetsStats):
     METS_KCAL_KG_H: tuple[float, ...]
 
     def update(self) -> None:
-        """
-        Override the parent method to include the calculation of the energy
-        consumption using the METs value that is dependent on the speed.
+        """Override the parent method.
+
+        Include the calculation of the energy consumption using the METs value
+        that is dependent on the speed.
         """
         ExerciseStats.update(self)
         self.mets_kcal_kg_h = self.calc_mets_kcal_kg_h(self.speed_kmph)
@@ -261,8 +246,7 @@ class MetsSpeedStats(MetsStats):
         self.energy_kj = kcal2j(self.energy_kcal) * 1e-3
 
     def calc_mets_kcal_kg_h(self, speed_kmph: float) -> float:
-        """
-        Return the metabolic equivalent of task.
+        """Return the metabolic equivalent of task.
 
         This is done by converting the MET value to kcal/km/kg.
 

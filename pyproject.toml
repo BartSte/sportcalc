@@ -28,3 +28,6 @@ speedskating = "sportcalc.implementations.speedskating:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["sportcalc", "sportcalc.*"]
+
+[tool.ruff]
+line-length = 80
