@@ -1,4 +1,4 @@
-from sportcalc.core.stats import MetsSpeedStats
+from sportcalc._core.stats import MetsSpeedStats
 
 
 class SpeedSkatingStats(MetsSpeedStats):

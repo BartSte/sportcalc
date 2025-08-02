@@ -5,8 +5,8 @@ from typing import Any
 
 import numpy as np
 
-from sportcalc.core import static
-from sportcalc.core.conversions import datetime2seconds, kcal2j, ms2kmh
+from sportcalc._core import static
+from sportcalc._core.conversions import datetime2seconds, kcal2j, ms2kmh
 
 
 class ExerciseStats:

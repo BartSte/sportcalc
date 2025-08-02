@@ -3,7 +3,7 @@ import re
 from contextlib import suppress
 from datetime import time
 
-from sportcalc.core.exceptions import CoreValueError
+from sportcalc._core.exceptions import CoreValueError
 
 TIME_UNITS: dict[str, int] = {
     "h": 3600,

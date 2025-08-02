@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sportcalc.core.exceptions import CoreValueError
+from sportcalc._core.exceptions import CoreValueError
 
 
 def j2kj(joules: float) -> float:

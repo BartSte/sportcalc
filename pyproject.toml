@@ -20,19 +20,19 @@ version = "0.1.0"
 dev = ["pytest"]
 
 [project.scripts]
-cycling = "sportcalc.implementations.cycling:main"
-running = "sportcalc.implementations.running:main"
-walking = "sportcalc.implementations.walking:main"
-speedskating = "sportcalc.implementations.speedskating:main"
+cycling = "sportcalc.cycling:main"
+running = "sportcalc.running:main"
+walking = "sportcalc.walking:main"
+speedskating = "sportcalc.speedskating:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["sportcalc", "sportcalc.*"]
 
 [tool.setuptools.package-data]
-"sportcalc.core.static" = ["*"]
-"sportcalc.implementations.cycling.static" = ["*"]
-"sportcalc.implementations.speedskating.static" = ["*"]
+"sportcalc._core.static" = ["*"]
+"sportcalc.cycling.static" = ["*"]
+"sportcalc.speedskating.static" = ["*"]
 
 [tool.ruff]
 line-length = 80

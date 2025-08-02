@@ -1,6 +1,6 @@
-from sportcalc.core import exec
-from sportcalc.core.cli.parser import CoreParser
-from sportcalc.core.stats import MetsSpeedStats
+from sportcalc._core import exec
+from sportcalc._core.cli.parser import CoreParser
+from sportcalc._core.stats import MetsSpeedStats
 
 
 class RunningStats(MetsSpeedStats):

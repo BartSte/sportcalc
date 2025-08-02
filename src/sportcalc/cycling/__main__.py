@@ -1,7 +1,7 @@
-from sportcalc.core import exec
+from sportcalc._core import exec
 
-from sportcalc.implementations.cycling.parser import CyclingParser
-from sportcalc.implementations.cycling.stats import CyclingStats
+from sportcalc.cycling.parser import CyclingParser
+from sportcalc.cycling.stats import CyclingStats
 
 
 def main() -> str:

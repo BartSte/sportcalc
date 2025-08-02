@@ -1,8 +1,8 @@
 from typing import override
 
-from sportcalc.core.conversions import j2kcal, j2kj
-from sportcalc.core.stats import ExerciseStats
-from sportcalc.implementations.cycling import static
+from sportcalc._core.conversions import j2kcal, j2kj
+from sportcalc._core.stats import ExerciseStats
+from sportcalc.cycling import static
 
 
 class CyclingStats(ExerciseStats):

@@ -1,8 +1,8 @@
 from argparse import Action, ArgumentParser, Namespace
 from typing import Any
 
-from sportcalc.core.cli.type_parsers import parse_time
-from sportcalc.core.stats import ExerciseStats
+from sportcalc._core.cli.type_parsers import parse_time
+from sportcalc._core.stats import ExerciseStats
 
 
 class CoreParser(ArgumentParser):
