@@ -1,4 +1,3 @@
-from os.path import join
 from typing import override
 
 from sportcalc.core.conversions import j2kcal, j2kj
@@ -206,7 +205,7 @@ class CyclingStats(ExerciseStats):
             a string containing a summary of the cycling statistics
 
         """
-        template: str = join(static, "results.template")
+        template: str = static.join("results.template")
         with open(template) as results_file:
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt

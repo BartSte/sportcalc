@@ -1,7 +1,6 @@
 import json
 import logging
 from datetime import datetime
-from os.path import join
 from typing import Any
 
 import numpy as np
@@ -110,7 +109,7 @@ class ExerciseStats:
             the string representation of the object
 
         """
-        inputs: str = join(static, "inputs.template")
+        inputs: str = static.join("inputs.template")
         with open(inputs) as inputs_file:
             return inputs_file.read().format(**self.as_dict())
 
@@ -182,7 +181,7 @@ class MetsStats(ExerciseStats):
             a string containing a summary of the statistics
 
         """
-        template: str = join(static, "results_mets.template")
+        template: str = static.join("results_mets.template")
         with open(template) as results_file:
             txt: str = results_file.read().format(**self.as_dict())
             return super().summarize() + txt
