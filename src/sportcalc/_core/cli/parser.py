@@ -1,4 +1,5 @@
-from argparse import Action, ArgumentParser, Namespace
+from argparse import Action, ArgumentParser, Namespace, RawTextHelpFormatter
+from importlib.metadata import entry_points
 from typing import Any
 
 from sportcalc._core.cli.type_parsers import parse_time
@@ -92,12 +93,34 @@ class CoreParser(ArgumentParser):
 
 
 def make_top_level_parser() -> ArgumentParser:
-    """Create the top level parser."""
-    parser = ArgumentParser(
+    """Create the top level parser.
+
+    This parser merely instructs the user to use one of the console-scripts
+    instead.
+
+    Returns
+        The top level parser.
+    """
+    sports = _list_supported_sports()
+    bullet_list = "\n".join(f"  • {sport}" for sport in sports)
+    description = (
+        "Calculator the energy consumption for various sports.\n\n"
+        "Please use one of the following command line commands for a specific "
+        f"sport:\n{bullet_list}\n\nRun `<command> --help' for more "
+        "details on a specific sport."
+    )
+    return ArgumentParser(
         prog="sportcalc",
-        description="Calculate statistics for various sports.",
+        description=description,
+        formatter_class=RawTextHelpFormatter,
     )
 
-    # TODO: redirect the user to 1 of the sports
 
-    return parser
+def _list_supported_sports() -> list[str]:
+    """Return console-script names that launch sport calculators.
+
+    Returns
+        The list of sport calculator names.
+    """
+    command = entry_points(group="console_scripts")
+    return sorted(x.name for x in command if x.value.startswith("sportcalc."))
