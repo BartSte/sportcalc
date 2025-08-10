@@ -1,17 +1,7 @@
 import sys
-from argparse import ArgumentParser
-from collections.abc import Callable
+from argparse import Namespace
 
-from sportcalc import cycling, running, speedskating, walking
-
-MainFunction = Callable[[list[str] | None], str]
-
-ENTRY_POINTS: dict[str, MainFunction] = {
-    "cycling": cycling.main,
-    "running": running.main,
-    "speedskating": speedskating.main,
-    "walking": walking.main,
-}
+from sportcalc._core.cli.dispatch_parser import DispatchParser
 
 
 def main() -> str:
@@ -21,23 +11,12 @@ def main() -> str:
     main function. Prints the result and exits with status 1 when no valid
     sport is provided.
     """
-    parser = ArgumentParser(
+    parser = DispatchParser(
         prog="sportcalc",
         description="Calculate the energy consumption for various sports.",
-        add_help=False,
     )
-    parser.add_argument(
-        "sport",
-        choices=ENTRY_POINTS.keys(),
-        nargs="?",
-        help="The name of the sport to calculate the energy consumption for.",
-    )
-    parser.add_argument(
-        "-h", "--help", action="store_true", help="Show help message"
-    )
-    args, _ = parser.parse_known_args()
-    main: MainFunction | None = ENTRY_POINTS.get(args.sport)
-    return main(sys.argv[2:]) if main else parser.format_help()
+    args: Namespace = parser.parse_known_args()[0]
+    return args.func(sys.argv[2:]) if args.func else parser.format_help()
 
 
 if __name__ == "__main__":
