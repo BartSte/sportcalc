@@ -20,10 +20,7 @@ version = "0.2.0"
 dev = ["pytest"]
 
 [project.scripts]
-cycling = "sportcalc.cycling:main"
-running = "sportcalc.running:main"
-walking = "sportcalc.walking:main"
-speedskating = "sportcalc.speedskating:main"
+sportcalc = "sportcalc.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -36,3 +33,7 @@ include = ["sportcalc", "sportcalc.*"]
 
 [tool.ruff]
 line-length = 80
+
+[tool.pyright]
+reportUnusedCallResult = false
+reportImplicitStringConcatenation = false

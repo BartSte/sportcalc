@@ -4,16 +4,16 @@ from sportcalc.cycling.parser import CyclingParser
 from sportcalc.cycling.stats import CyclingStats
 
 
-def main() -> str:
-    """
-    Entry point for the cyclingcalc module.
+def main(argv: list[str] | None = None) -> str:
+    """Run the cycling CLI entrypoint.
 
-    Returns
-    -------
-        the summary of the cycling statistics.
+    Args:
+        argv: Command-line arguments to parse. If None, sys.argv[1:] is used.
 
+    Returns:
+        The formatted results string produced by the CLI execution.
     """
-    return exec(CyclingParser(), CyclingStats)
+    return exec(CyclingParser(argv=argv), CyclingStats)
 
 
 if __name__ == "__main__":

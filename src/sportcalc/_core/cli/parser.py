@@ -1,19 +1,35 @@
-from argparse import Action, ArgumentParser, Namespace, RawTextHelpFormatter
-from importlib.metadata import entry_points
+import sys
+from argparse import Action, ArgumentParser, Namespace
+from collections.abc import Callable, Sequence
+from importlib import import_module
+from types import ModuleType
 from typing import Any
 
 from sportcalc._core.cli.type_parsers import parse_time
 from sportcalc._core.stats import ExerciseStats
 
+MainFunction = Callable[[list[str] | None], str]
+
 
 class CoreParser(ArgumentParser):
     """Parser for the core module."""
 
+    _args: list[str]
     distance_km: Action
 
-    def __init__(self, *args: Any, **kwargs: Any):
-        """Create a new CoreParser."""
+    def __init__(
+        self, *args: Any, argv: list[str] | None = None, **kwargs: Any
+    ):
+        """Create a new CoreParser.
+
+        Args
+            *args: Additional arguments passed to `ArgumentParser`.
+            argv: The argv to parse. If not provided, it will use `sys.argv`.
+            **kwargs: Additional keyword arguments passed to `ArgumentParser`.
+
+        """
         super().__init__(*args, **kwargs)
+        self._args = sys.argv[1:] if argv is None else argv
 
         self.weight_kg = self.add_argument(
             "weight_kg",
@@ -85,7 +101,17 @@ class CoreParser(ArgumentParser):
         )
 
     def parse_args(self, *args: Any, **kwargs: Any) -> Namespace:
-        """Parse the arguments."""
+        """Parse arguments and compute derived values.
+
+        Args:
+            *args: Positional arguments forwarded to ArgumentParser.parse_args.
+            **kwargs: Keyword arguments forwarded to ArgumentParser.parse_args.
+
+        Returns:
+            Parsed namespace with an extra 'distance_m' field (meters).
+        """
+        if not args and "args" not in kwargs:
+            kwargs["args"] = self._args
         parsed_args: Namespace = super().parse_args(*args, **kwargs)
         parsed_args.distance_m = parsed_args.distance_km * 1000
 
@@ -101,26 +127,56 @@ def make_top_level_parser() -> ArgumentParser:
     Returns
         The top level parser.
     """
-    sports = _list_supported_sports()
-    bullet_list = "\n".join(f"  • {sport}" for sport in sports)
-    description = (
-        "Calculator the energy consumption for various sports.\n\n"
-        "Please use one of the following command line commands for a specific "
-        f"sport:\n{bullet_list}\n\nRun `<command> --help' for more "
-        "details on a specific sport."
-    )
-    return ArgumentParser(
+    description = "Calculate the energy consumption for various sports."
+    parser = ArgumentParser(
         prog="sportcalc",
         description=description,
-        formatter_class=RawTextHelpFormatter,
+        add_help=False,
     )
+    parser.add_argument(
+        "sport",
+        choices=("running", "cycling", "speedskating", "walking"),
+        nargs="?",
+        action=ImportMainAction,
+        help="The name of the sport to calculate the energy consumption for.",
+    )
+    return parser
 
 
-def _list_supported_sports() -> list[str]:
-    """Return console-script names that launch sport calculators.
+class ImportMainAction(Action):
+    """Argparse action that imports a sport module and attaches its main function."""
 
-    Returns
-        The list of sport calculator names.
-    """
-    command = entry_points(group="console_scripts")
-    return sorted(x.name for x in command if x.value.startswith("sportcalc."))
+    def __call__(
+        self,
+        parser: ArgumentParser,
+        namespace: Namespace,
+        values: str | Sequence[Any] | None,
+        option_string: str | None = None,
+    ):
+        """Handle the action by importing the sport module and attaching its main.
+
+        Args:
+            parser: The argument parser invoking this action.
+            namespace: Namespace to receive parsed values.
+            values: The sport name; e.g., 'running', 'cycling', etc.
+            option_string: The option string used, if any.
+
+        Returns:
+            None.
+        """
+        namespace.sport = values
+        namespace.main = self._import(values) if values else None
+
+    def _import(self, values: str | Sequence[str]) -> MainFunction | None:
+        """Import the sport module and return its main function.
+
+        Args:
+            values: Sport name to import.
+
+        Returns:
+            The module's 'main' function if present; otherwise None.
+        """
+        import_module(f"sportcalc.{values}")
+        module: ModuleType = sys.modules[f"sportcalc.{values}"]
+        main: MainFunction | None = getattr(module, "main", None)
+        return main

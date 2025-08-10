@@ -14,16 +14,16 @@ class WalkingStats(MetsSpeedStats):
     METS_KM_H: tuple[float, ...] = 1.61, 3.22, 4.83, 5.68, 6.44
     METS_KCAL_KG_H: tuple[float, ...] = 2.0, 2.5, 3.3, 3.8, 5.0
 
-def main() -> str:
-    """
-    Entry point for the runningcalc module.
+def main(argv: list[str] | None = None) -> str:
+    """Entry point for the walking CLI.
 
-    Returns
-    -------
-        the summary of the runningcalc statistics.
+    Args:
+        argv: Optional list of command-line arguments.
 
+    Returns:
+        Result string produced by the core executor.
     """
-    return exec(CoreParser(), WalkingStats)
+    return exec(CoreParser(argv=argv), WalkingStats)
 
 
 if __name__ == "__main__":

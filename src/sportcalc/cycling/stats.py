@@ -196,7 +196,6 @@ class CyclingStats(ExerciseStats):
         self.energy_kcal = j2kcal(self.energy_j)
         self.avg_power_w = self._calc_avg_power_w(self.work_j)
 
-    @override
     def summarize(self) -> str:
         """Return a string containing a summary of the cycling statistics.
 
