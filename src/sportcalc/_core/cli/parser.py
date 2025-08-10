@@ -1,17 +1,12 @@
 import sys
 from argparse import Action, ArgumentParser, Namespace
-from collections.abc import Callable, Sequence
-from importlib import import_module
-from types import ModuleType
 from typing import Any
 
 from sportcalc._core.cli.type_parsers import parse_time
 from sportcalc._core.stats import ExerciseStats
 
-MainFunction = Callable[[list[str] | None], str]
 
-
-class CoreParser(ArgumentParser):
+class SportParser(ArgumentParser):
     """Parser for the core module."""
 
     _args: list[str]
@@ -116,67 +111,3 @@ class CoreParser(ArgumentParser):
         parsed_args.distance_m = parsed_args.distance_km * 1000
 
         return parsed_args
-
-
-def make_top_level_parser() -> ArgumentParser:
-    """Create the top level parser.
-
-    This parser merely instructs the user to use one of the console-scripts
-    instead.
-
-    Returns
-        The top level parser.
-    """
-    description = "Calculate the energy consumption for various sports."
-    parser = ArgumentParser(
-        prog="sportcalc",
-        description=description,
-        add_help=False,
-    )
-    parser.add_argument(
-        "sport",
-        choices=("running", "cycling", "speedskating", "walking"),
-        nargs="?",
-        action=ImportMainAction,
-        help="The name of the sport to calculate the energy consumption for.",
-    )
-    return parser
-
-
-class ImportMainAction(Action):
-    """Argparse action that imports a sport module and attaches its main function."""
-
-    def __call__(
-        self,
-        parser: ArgumentParser,
-        namespace: Namespace,
-        values: str | Sequence[Any] | None,
-        option_string: str | None = None,
-    ):
-        """Handle the action by importing the sport module and attaching its main.
-
-        Args:
-            parser: The argument parser invoking this action.
-            namespace: Namespace to receive parsed values.
-            values: The sport name; e.g., 'running', 'cycling', etc.
-            option_string: The option string used, if any.
-
-        Returns:
-            None.
-        """
-        namespace.sport = values
-        namespace.main = self._import(values) if values else None
-
-    def _import(self, values: str | Sequence[str]) -> MainFunction | None:
-        """Import the sport module and return its main function.
-
-        Args:
-            values: Sport name to import.
-
-        Returns:
-            The module's 'main' function if present; otherwise None.
-        """
-        import_module(f"sportcalc.{values}")
-        module: ModuleType = sys.modules[f"sportcalc.{values}"]
-        main: MainFunction | None = getattr(module, "main", None)
-        return main

@@ -3,12 +3,12 @@ import sys
 from argparse import Namespace
 from types import TracebackType
 
-from sportcalc._core.cli.parser import CoreParser
+from sportcalc._core.cli.parser import SportParser
 from sportcalc._core.exceptions import CoreException
 from sportcalc._core.stats import ExerciseStats
 
 
-def exec(parser: CoreParser, cls: type[ExerciseStats]) -> str:
+def exec(parser: SportParser, cls: type[ExerciseStats]) -> str:
     """Run the statistics of the exercise based on the cli arguments.
 
     Returns

@@ -1,7 +1,7 @@
-from sportcalc._core.cli.parser import CoreParser
+from sportcalc._core.cli.parser import SportParser
 
 
-class SpeedSkatingParser(CoreParser):
+class SpeedSkatingParser(SportParser):
     """
     Parser for SpeedSkatingStats.
 

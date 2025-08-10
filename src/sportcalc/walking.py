@@ -1,5 +1,5 @@
 from sportcalc._core import exec
-from sportcalc._core.cli.parser import CoreParser
+from sportcalc._core.cli.parser import SportParser
 from sportcalc._core.stats import MetsSpeedStats
 
 
@@ -23,7 +23,7 @@ def main(argv: list[str] | None = None) -> str:
     Returns:
         Result string produced by the core executor.
     """
-    return exec(CoreParser(argv=argv), WalkingStats)
+    return exec(SportParser(argv=argv), WalkingStats)
 
 
 if __name__ == "__main__":

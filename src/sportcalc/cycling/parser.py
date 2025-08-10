@@ -1,10 +1,10 @@
 from argparse import Namespace
 
-from sportcalc._core.cli.parser import CoreParser
+from sportcalc._core.cli.parser import SportParser
 from sportcalc._core.cli.type_parsers import parse_percentage
 
 
-class CyclingParser(CoreParser):
+class CyclingParser(SportParser):
     """
     Return the argument parser for the script.
 
